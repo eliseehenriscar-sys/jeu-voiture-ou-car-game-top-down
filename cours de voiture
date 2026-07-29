@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Course 2D - Plus d'espace</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #0f0f0f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+  }
+
+  #game-container {
+    position: relative;
+    width: 420px;
+    height: 650px;
+    background: #1a1a1a;
+    border: 5px solid #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.9);
+  }
+
+  #road {
+    position: absolute;
+    left: 40px;
+    width: 340px;
+    height: 100%;
+    background: #3a3a3a;
+  }
+
+  .lane-line {
+    position: absolute;
+    width: 6px;
+    height: 50px;
+    background: #fff;
+    border-radius: 3px;
+  }
+
+  .lane-line.left {
+    left: 110px;
+  }
+
+  .lane-line.right {
+    left: 224px;
+  }
+
+  .side {
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    background: #1e5c2e;
+  }
+
+  .side.left  { left: 0; }
+  .side.right { right: 0; }
+
+  .plant {
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  .bush {
+    width: 20px;
+    height: 20px;
+    background: #2d8a3e;
+    box-shadow: 0 0 6px rgba(0,0,0,0.4);
+  }
+
+  .tree {
+    width: 26px;
+    height: 26px;
+    background: #1f6b2e;
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  }
+
+  .tree::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 12px;
+    background: #5c3a1e;
+    border-radius: 2px;
+  }
+
+  .car {
+    position: absolute;
+    width: 58px;
+    height: 110px;
+    z-index: 10;
+  }
+
+  .car .body {
+    position: absolute;
+    width: 58px;
+    height: 100px;
+    border-radius: 18px 18px 10px 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.55);
+  }
+
+  .car .roof {
+    position: absolute;
+    top: 22px;
+    left: 7px;
+    width: 44px;
+    height: 42px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 10px 10px 6px 6px;
+  }
+
+  .car .windshield {
+    position: absolute;
+    top: 16px;
+    left: 9px;
+    width: 40px;
+    height: 22px;
+    background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
+    border-radius: 8px 8px 3px 3px;
+    border: 1.5px solid rgba(0,0,0,0.3);
+  }
+
+  .car .rear-window {
+    position: absolute;
+    top: 58px;
+    left: 9px;
+    width: 40px;
+    height: 16px;
+    background: linear-gradient(to bottom, #7ec8ff, #3a8de0);
+    border-radius: 3px 3px 6px 6px;
+    border: 1.5px solid rgba(0,0,0,0.3);
+  }
+
+  .car .headlight {
+    position: absolute;
+    top: 4px;
+    width: 12px;
+    height: 7px;
+    background: #fff8dc;
+    border-radius: 3px;
+    box-shadow: 0 0 6px #fff8dc;
+  }
+  .car .headlight.left  { left: 8px; }
+  .car .headlight.right { right: 8px; }
+
+  .car .taillight {
+    position: absolute;
+    bottom: 6px;
+    width: 12px;
+    height: 6px;
+    background: #ff3b3b;
+    border-radius: 2px;
+    box-shadow: 0 0 5px #ff3b3b;
+  }
+  .car .taillight.left  { left: 8px; }
+  .car .taillight.right { right: 8px; }
+
+  .car .mirror {
+    position: absolute;
+    top: 28px;
+    width: 7px;
+    height: 5px;
+    background: #222;
+    border-radius: 2px;
+  }
+  .car .mirror.left  { left: -5px; }
+  .car .mirror.right { right: -5px; }
+
+  .car .wheel {
+    position: absolute;
+    width: 13px;
+    height: 22px;
+    background: #111;
+    border-radius: 4px;
+    border: 2px solid #444;
+    z-index: 2;
+  }
+  .car .wheel.front-left  { top: 14px;  left: -6px; }
+  .car .wheel.front-right { top: 14px;  right: -6px; }
+  .car .wheel.rear-left   { bottom: 16px; left: -6px; }
+  .car .wheel.rear-right  { bottom: 16px; right: -6px; }
+
+  .car .wheel::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 2px;
+    width: 5px;
+    height: 8px;
+    background: #999;
+    border-radius: 2px;
+  }
+
+  .enemy {
+    transform: rotate(180deg);
+  }
+
+  #player .body {
+    background: linear-gradient(to bottom, #e74c3c, #c0392b);
+  }
+
+  .enemy.green .body   { background: linear-gradient(to bottom, #00b894, #00916e); }
+  .enemy.blue .body    { background: linear-gradient(to bottom, #0984e3, #0652dd); }
+  .enemy.yellow .body  { background: linear-gradient(to bottom, #f1c40f, #e67e22); }
+  .enemy.purple .body  { background: linear-gradient(to bottom, #a29bfe, #6c5ce7); }
+  .enemy.orange .body  { background: linear-gradient(to bottom, #e67e22, #d35400); }
+  .enemy.pink .body    { background: linear-gradient(to bottom, #fd79a8, #e84393); }
+  .enemy.cyan .body    { background: linear-gradient(to bottom, #00cec9, #00b5b0); }
+  .enemy.white .body   { background: linear-gradient(to bottom, #dfe6e9, #b2bec3); }
+
+  #score {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 20;
+    text-shadow: 2px 2px 6px black;
+  }
+
+  #game-over {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.88);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 30;
+  }
+
+  #game-over h1 {
+    font-size: 46px;
+    margin-bottom: 12px;
+    color: #e74c3c;
+    text-shadow: 0 0 20px #e74c3c;
+  }
+
+  #final-score {
+    font-size: 26px;
+    margin-bottom: 35px;
+  }
+
+  #restart {
+    padding: 14px 36px;
+    font-size: 20px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+  }
+
+  #restart:hover {
+    background: #c0392b;
+    transform: scale(1.08);
+  }
+
+  #instructions {
+    position: absolute;
+    bottom: 12px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #bbb;
+    z-index: 15;
+  }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+  <div class="side left" id="side-left"></div>
+  <div class="side right" id="side-right"></div>
+
+  <div id="road"></div>
+
+  <div id="player" class="car">
+    <div class="body"></div>
+    <div class="roof"></div>
+    <div class="windshield"></div>
+    <div class="rear-window"></div>
+    <div class="headlight left"></div>
+    <div class="headlight right"></div>
+    <div class="taillight left"></div>
+    <div class="taillight right"></div>
+    <div class="mirror left"></div>
+    <div class="mirror right"></div>
+    <div class="wheel front-left"></div>
+    <div class="wheel front-right"></div>
+    <div class="wheel rear-left"></div>
+    <div class="wheel rear-right"></div>
+  </div>
+
+  <div id="score">Score: 0</div>
+  <div id="instructions">← → ↑ ↓ pour conduire</div>
+
+  <div id="game-over">
+    <h1>GAME OVER</h1>
+    <div id="final-score">Score: 0</div>
+    <button id="restart">Rejouer</button>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('game-container');
+  const player = document.getElementById('player');
+  const scoreDisplay = document.getElementById('score');
+  const gameOverScreen = document.getElementById('game-over');
+  const finalScore = document.getElementById('final-score');
+  const restartBtn = document.getElementById('restart');
+  const road = document.getElementById('road');
+  const sideLeft = document.getElementById('side-left');
+  const sideRight = document.getElementById('side-right');
+
+  let playerX = 181;
+  let playerY = 500;
+  let score = 0;
+  let speed = 5;
+  let gameRunning = true;
+  let enemies = [];
+  let keys = { left: false, right: false, up: false, down: false };
+  let laneLines = [];
+  let plants = [];
+
+  const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
+
+  function createLaneLines() {
+    for (let i = 0; i < 14; i++) {
+      const lineL = document.createElement('div');
+      lineL.classList.add('lane-line', 'left');
+      lineL.style.top = (i * 70 - 40) + 'px';
+      road.appendChild(lineL);
+      laneLines.push(lineL);
+
+      const lineR = document.createElement('div');
+      lineR.classList.add('lane-line', 'right');
+      lineR.style.top = (i * 70 - 40) + 'px';
+      road.appendChild(lineR);
+      laneLines.push(lineR);
+    }
+  }
+
+  function createPlants() {
+    for (let i = 0; i < 12; i++) {
+      const bushL = document.createElement('div');
+      bushL.classList.add('plant', Math.random() > 0.4 ? 'tree' : 'bush');
+      bushL.style.left = (6 + Math.random() * 10) + 'px';
+      bushL.style.top = (i * 70 - 30) + 'px';
+      sideLeft.appendChild(bushL);
+      plants.push(bushL);
+
+      const bushR = document.createElement('div');
+      bushR.classList.add('plant', Math.random() > 0.4 ? 'tree' : 'bush');
+      bushR.style.left = (6 + Math.random() * 10) + 'px';
+      bushR.style.top = (i * 70 - 20) + 'px';
+      sideRight.appendChild(bushR);
+      plants.push(bushR);
+    }
+  }
+
+  function moveEnvironment() {
+    laneLines.forEach(line => {
+      let top = parseFloat(line.style.top);
+      top += speed * 1.8;
+      if (top > 650) top = -50;
+      line.style.top = top + 'px';
+    });
+
+    plants.forEach(plant => {
+      let top = parseFloat(plant.style.top);
+      top += speed * 1.8;
+      if (top > 660) top = -40;
+      plant.style.top = top + 'px';
+    });
+  }
+
+  function createEnemy() {
+    const enemy = document.createElement('div');
+    enemy.classList.add('car', 'enemy');
+
+    const color = carColors[Math.floor(Math.random() * carColors.length)];
+    enemy.classList.add(color);
+
+    enemy.innerHTML = `
+      <div class="body"></div>
+      <div class="roof"></div>
+      <div class="windshield"></div>
+      <div class="rear-window"></div>
+      <div class="headlight left"></div>
+      <div class="headlight right"></div>
+      <div class="taillight left"></div>
+      <div class="taillight right"></div>
+      <div class="mirror left"></div>
+      <div class="mirror right"></div>
+      <div class="wheel front-left"></div>
+      <div class="wheel front-right"></div>
+      <div class="wheel rear-left"></div>
+      <div class="wheel rear-right"></div>
+    `;
+
+    // Positions des 3 voies avec un peu plus d'espace
+    const positions = [70, 181, 292];
+    enemy.style.left = positions[Math.floor(Math.random() * 3)] + 'px';
+    enemy.style.top = '-130px';
+
+    container.appendChild(enemy);
+    enemies.push(enemy);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  keys.left = true;
+    if (e.key === 'ArrowRight') keys.right = true;
+    if (e.key === 'ArrowUp')    keys.up = true;
+    if (e.key === 'ArrowDown')  keys.down = true;
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft')  keys.left = false;
+    if (e.key === 'ArrowRight') keys.right = false;
+    if (e.key === 'ArrowUp')    keys.up = false;
+    if (e.key === 'ArrowDown')  keys.down = false;
+  });
+
+  function gameLoop() {
+    if (!gameRunning) return;
+
+    const moveSpeed = 5.5;
+
+    if (keys.left && playerX > 48) {
+      playerX -= moveSpeed;
+    }
+    if (keys.right && playerX < 314) {
+      playerX += moveSpeed;
+    }
+    if (keys.up && playerY > 30) {
+      playerY -= moveSpeed;
+    }
+    if (keys.down && playerY < 530) {
+      playerY += moveSpeed;
+    }
+
+    player.style.left = playerX + 'px';
+    player.style.top = playerY + 'px';
+
+    moveEnvironment();
+
+    enemies.forEach((enemy, index) => {
+      let top = parseFloat(enemy.style.top) || 0;
+      top += speed;
+      enemy.style.top = top + 'px';
+
+      if (checkCollision(player, enemy)) {
+        endGame();
+      }
+
+      if (top > 680) {
+        enemy.remove();
+        enemies.splice(index, 1);
+        score += 10;
+        scoreDisplay.textContent = 'Score: ' + score;
+
+        if (score % 40 === 0) {
+          speed += 0.35;
+        }
+      }
+    });
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  function checkCollision(a, b) {
+    const aRect = a.getBoundingClientRect();
+    const bRect = b.getBoundingClientRect();
+
+    return !(
+      aRect.bottom - 20 < bRect.top ||
+      aRect.top + 15 > bRect.bottom ||
+      aRect.right - 12 < bRect.left ||
+      aRect.left + 12 > bRect.right
+    );
+  }
+
+  function endGame() {
+    gameRunning = false;
+    finalScore.textContent = 'Score: ' + score;
+    gameOverScreen.style.display = 'flex';
+  }
+
+  restartBtn.addEventListener('click', () => {
+    enemies.forEach(e => e.remove());
+    enemies = [];
+    score = 0;
+    speed = 5;
+    playerX = 181;
+    playerY = 500;
+    player.style.left = '181px';
+    player.style.top = '500px';
+    scoreDisplay.textContent = 'Score: 0';
+    gameOverScreen.style.display = 'none';
+    keys = { left: false, right: false, up: false, down: false };
+    gameRunning = true;
+    gameLoop();
+  });
+
+  player.style.top = playerY + 'px';
+  player.style.bottom = 'auto';
+
+  createLaneLines();
+  createPlants();
+
+  // Plus d'espace entre les voitures (apparition moins fréquente)
+  setInterval(() => {
+    if (gameRunning) createEnemy();
+  }, 1550);
+
+  gameLoop();
+</script>
+</body>
+</html>
