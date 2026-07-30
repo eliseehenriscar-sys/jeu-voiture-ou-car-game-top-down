@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Lumières + Camions</title>
+<title>Course 2D - Nom + Scores</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -77,7 +77,6 @@
     border-radius: 2px;
   }
 
-  /* ===== VOITURES ===== */
   .car {
     position: absolute;
     width: 58px;
@@ -160,7 +159,6 @@
     border-radius: 2px;
   }
 
-  /* Faisceau de lumière (réflexion sur la route) - VOITURE */
   .car .light-beam {
     position: absolute;
     top: -55px;
@@ -175,7 +173,6 @@
     filter: blur(4px);
   }
 
-  /* ===== CAMIONS ===== */
   .truck {
     position: absolute;
     width: 64px;
@@ -222,7 +219,6 @@
   .truck .taillight.left  { left: 8px; }
   .truck .taillight.right { right: 8px; }
 
-  /* Seulement 4 roues maintenant (plus de roues du milieu) */
   .truck .wheel {
     position: absolute;
     width: 14px; height: 24px;
@@ -244,7 +240,6 @@
     border-radius: 2px;
   }
 
-  /* Faisceau de lumière - CAMION */
   .truck .light-beam {
     position: absolute;
     top: -65px;
@@ -261,7 +256,6 @@
 
   .enemy { transform: rotate(180deg); }
 
-  /* Couleurs voitures */
   #player .body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
 
   .enemy.green .body   { background: linear-gradient(to bottom, #00b894, #00916e); }
@@ -273,7 +267,6 @@
   .enemy.cyan .body    { background: linear-gradient(to bottom, #00cec9, #00b5b0); }
   .enemy.white .body   { background: linear-gradient(to bottom, #dfe6e9, #b2bec3); }
 
-  /* Couleurs camions */
   .enemy.truck-red .body    { background: linear-gradient(to bottom, #c0392b, #922b21); }
   .enemy.truck-blue .body   { background: linear-gradient(to bottom, #2980b9, #1a5276); }
   .enemy.truck-green .body  { background: linear-gradient(to bottom, #27ae60, #1e8449); }
@@ -284,63 +277,111 @@
   #score {
     position: absolute;
     top: 18px; left: 18px;
-    font-size: 24px; font-weight: bold;
+    font-size: 22px; font-weight: bold;
     z-index: 20;
     text-shadow: 2px 2px 6px black;
   }
 
-  #game-over {
+  #player-name-display {
+    position: absolute;
+    top: 48px; left: 18px;
+    font-size: 15px;
+    z-index: 20;
+    color: #ddd;
+    text-shadow: 1px 1px 4px black;
+  }
+
+  #speed-display {
+    position: absolute;
+    top: 18px; right: 18px;
+    font-size: 17px; font-weight: bold;
+    z-index: 20;
+    text-shadow: 2px 2px 6px black;
+    color: #f1c40f;
+  }
+
+  #game-over, #start-screen {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.88);
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 30;
-  }
-  #game-over h1 {
-    font-size: 46px; margin-bottom: 12px;
-    color: #e74c3c;
-    text-shadow: 0 0 20px #e74c3c;
-  }
-  #final-score { font-size: 26px; margin-bottom: 35px; }
-  #restart {
-    padding: 14px 36px; font-size: 20px;
-    background: #e74c3c; color: white;
-    border: none; border-radius: 10px;
-    cursor: pointer; font-weight: bold;
-    transition: 0.2s;
-  }
-  #restart:hover { background: #c0392b; transform: scale(1.08); }
-
-  #instructions {
-    position: absolute;
-    bottom: 12px; width: 100%;
-    text-align: center; font-size: 14px;
-    color: #bbb; z-index: 15;
-  }
-
-  #start-screen {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85);
+    background: rgba(0,0,0,0.9);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 40;
   }
-  #start-screen h1 { font-size: 36px; margin-bottom: 20px; }
-  #start-btn {
-    padding: 14px 40px; font-size: 20px;
-    background: #27ae60; color: white;
-    border: none; border-radius: 10px;
-    cursor: pointer; font-weight: bold;
+
+  #game-over { display: none; }
+
+  #start-screen h1, #game-over h1 {
+    font-size: 34px;
+    margin-bottom: 15px;
   }
-  #start-btn:hover { background: #219a52; }
+
+  #game-over h1 {
+    color: #e74c3c;
+    text-shadow: 0 0 20px #e74c3c;
+  }
+
+  #name-input {
+    padding: 12px 18px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    width: 240px;
+    text-align: center;
+    margin-bottom: 18px;
+    outline: none;
+  }
+
+  #start-btn, #restart {
+    padding: 13px 36px;
+    font-size: 18px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  #start-btn:hover, #restart:hover { background: #219a52; }
+  #restart { background: #e74c3c; }
+  #restart:hover { background: #c0392b; }
+
+  #highscores {
+    margin-top: 20px;
+    width: 280px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  #highscores h3 {
+    margin-bottom: 10px;
+    color: #f1c40f;
+    text-align: center;
+  }
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .score-row:last-child { border-bottom: none; }
+
+  #final-score {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  #instructions {
+    position: absolute;
+    bottom: 12px; width: 100%;
+    text-align: center; font-size: 13px;
+    color: #bbb; z-index: 15;
+  }
 </style>
 </head>
 <body>
@@ -369,17 +410,30 @@
   </div>
 
   <div id="score">Score: 0</div>
-  <div id="instructions">← → ↑ ↓ pour conduire</div>
+  <div id="player-name-display"></div>
+  <div id="speed-display">Vitesse: 4.5</div>
+  <div id="instructions">← → pour bouger | ↑ maintenir pour accélérer</div>
 
+  <!-- ÉCRAN DE DÉMARRAGE -->
   <div id="start-screen">
     <h1>Course 2D</h1>
-    <p style="margin-bottom:20px;color:#ccc;">Clique pour activer le son</p>
+    <input type="text" id="name-input" placeholder="Entre ton nom..." maxlength="12" autocomplete="off">
     <button id="start-btn">Jouer</button>
+
+    <div id="highscores">
+      <h3>Meilleurs Scores</h3>
+      <div id="highscores-list">Aucun score pour le moment</div>
+    </div>
   </div>
 
+  <!-- ÉCRAN GAME OVER -->
   <div id="game-over">
     <h1>GAME OVER</h1>
     <div id="final-score">Score: 0</div>
+    <div id="highscores" style="margin-bottom: 20px;">
+      <h3>Meilleurs Scores</h3>
+      <div id="highscores-list-end"></div>
+    </div>
     <button id="restart">Rejouer</button>
   </div>
 </div>
@@ -388,30 +442,66 @@
   const container = document.getElementById('game-container');
   const player = document.getElementById('player');
   const scoreDisplay = document.getElementById('score');
+  const playerNameDisplay = document.getElementById('player-name-display');
+  const speedDisplay = document.getElementById('speed-display');
   const gameOverScreen = document.getElementById('game-over');
   const finalScore = document.getElementById('final-score');
   const restartBtn = document.getElementById('restart');
   const startScreen = document.getElementById('start-screen');
   const startBtn = document.getElementById('start-btn');
+  const nameInput = document.getElementById('name-input');
+  const highscoresList = document.getElementById('highscores-list');
+  const highscoresListEnd = document.getElementById('highscores-list-end');
   const road = document.getElementById('road');
   const sideLeft = document.getElementById('side-left');
   const sideRight = document.getElementById('side-right');
 
   let playerX = 181;
-  let playerY = 500;
+  const playerY = 480;
   let score = 0;
-  let speed = 5;
+  let speed = 4.5;
+  const minSpeed = 4;
+  const maxSpeed = 16;
   let gameRunning = false;
   let enemies = [];
-  let keys = { left: false, right: false, up: false, down: false };
+  let keys = { left: false, right: false, up: false };
   let laneLines = [];
   let plants = [];
   let spawnInterval = null;
+  let playerName = "Joueur";
 
   const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
   const truckColors = ['truck-red', 'truck-blue', 'truck-green', 'truck-yellow', 'truck-gray', 'truck-orange'];
 
-  // ===== SON MOTEUR =====
+  // ===== GESTION DES SCORES =====
+  function getHighScores() {
+    const data = localStorage.getItem('course2d_scores');
+    return data ? JSON.parse(data) : [];
+  }
+
+  function saveHighScore(name, scoreValue) {
+    let scores = getHighScores();
+    scores.push({ name: name, score: scoreValue });
+    scores.sort((a, b) => b.score - a.score);
+    scores = scores.slice(0, 5); // garder top 5
+    localStorage.setItem('course2d_scores', JSON.stringify(scores));
+  }
+
+  function displayHighScores(element) {
+    const scores = getHighScores();
+    if (scores.length === 0) {
+      element.innerHTML = '<div style="text-align:center;color:#aaa;">Aucun score</div>';
+      return;
+    }
+    element.innerHTML = scores.map((s, i) => 
+      `<div class="score-row"><span>${i+1}. ${s.name}</span><span>${s.score}</span></div>`
+    ).join('');
+  }
+
+  // Afficher les scores au chargement
+  displayHighScores(highscoresList);
+
+  // ===== SON =====
   let audioCtx = null;
   let engineOsc = null;
   let engineGain = null;
@@ -424,11 +514,11 @@
 
     engineOsc = audioCtx.createOscillator();
     engineOsc.type = 'sawtooth';
-    engineOsc.frequency.value = 55;
+    engineOsc.frequency.value = 95;
 
     engineFilter = audioCtx.createBiquadFilter();
     engineFilter.type = 'lowpass';
-    engineFilter.frequency.value = 400;
+    engineFilter.frequency.value = 700;
 
     engineGain = audioCtx.createGain();
     engineGain.gain.value = 0.12;
@@ -448,11 +538,11 @@
     noiseNode.loop = true;
 
     noiseGain = audioCtx.createGain();
-    noiseGain.gain.value = 0.03;
+    noiseGain.gain.value = 0.028;
 
     const noiseFilter = audioCtx.createBiquadFilter();
     noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.value = 200;
+    noiseFilter.frequency.value = 320;
 
     noiseNode.connect(noiseFilter);
     noiseFilter.connect(noiseGain);
@@ -464,9 +554,9 @@
 
   function updateEngineSound() {
     if (!audioCtx || !engineOsc) return;
-    const baseFreq = 45 + (speed * 8);
+    const baseFreq = 90 + (speed * 10);
     engineOsc.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.1);
-    engineFilter.frequency.setTargetAtTime(300 + speed * 40, audioCtx.currentTime, 0.1);
+    engineFilter.frequency.setTargetAtTime(500 + speed * 45, audioCtx.currentTime, 0.1);
   }
 
   function stopEngineSound() {
@@ -476,10 +566,9 @@
 
   function resumeEngineSound() {
     if (engineGain) engineGain.gain.setTargetAtTime(0.12, audioCtx.currentTime, 0.1);
-    if (noiseGain) noiseGain.gain.setTargetAtTime(0.03, audioCtx.currentTime, 0.1);
+    if (noiseGain) noiseGain.gain.setTargetAtTime(0.028, audioCtx.currentTime, 0.1);
   }
 
-  // ===== ENVIRONNEMENT =====
   function createLaneLines() {
     for (let i = 0; i < 14; i++) {
       const lineL = document.createElement('div');
@@ -517,19 +606,18 @@
   function moveEnvironment() {
     laneLines.forEach(line => {
       let top = parseFloat(line.style.top);
-      top += speed * 1.8;
+      top += speed * 1.5;
       if (top > 650) top = -50;
       line.style.top = top + 'px';
     });
     plants.forEach(plant => {
       let top = parseFloat(plant.style.top);
-      top += speed * 1.8;
+      top += speed * 1.5;
       if (top > 660) top = -40;
       plant.style.top = top + 'px';
     });
   }
 
-  // ===== CRÉATION ENNEMIS =====
   function createEnemy() {
     const isTruck = Math.random() < 0.28;
     const enemy = document.createElement('div');
@@ -589,27 +677,30 @@
     if (e.key === 'ArrowLeft')  keys.left = true;
     if (e.key === 'ArrowRight') keys.right = true;
     if (e.key === 'ArrowUp')    keys.up = true;
-    if (e.key === 'ArrowDown')  keys.down = true;
   });
   document.addEventListener('keyup', (e) => {
     if (e.key === 'ArrowLeft')  keys.left = false;
     if (e.key === 'ArrowRight') keys.right = false;
     if (e.key === 'ArrowUp')    keys.up = false;
-    if (e.key === 'ArrowDown')  keys.down = false;
   });
 
   function gameLoop() {
     if (!gameRunning) return;
 
     const moveSpeed = 5.5;
-
     if (keys.left && playerX > 48)  playerX -= moveSpeed;
     if (keys.right && playerX < 314) playerX += moveSpeed;
-    if (keys.up && playerY > 30)   playerY -= moveSpeed;
-    if (keys.down && playerY < 530) playerY += moveSpeed;
-
     player.style.left = playerX + 'px';
-    player.style.top = playerY + 'px';
+
+    if (keys.up) {
+      speed += 0.028;
+      if (speed > maxSpeed) speed = maxSpeed;
+    } else {
+      speed -= 0.022;
+      if (speed < minSpeed) speed = minSpeed;
+    }
+
+    speedDisplay.textContent = 'Vitesse: ' + speed.toFixed(1);
 
     moveEnvironment();
     updateEngineSound();
@@ -628,10 +719,6 @@
         enemies.splice(index, 1);
         score += enemy.classList.contains('truck') ? 20 : 10;
         scoreDisplay.textContent = 'Score: ' + score;
-
-        if (score % 40 === 0) {
-          speed += 0.35;
-        }
       }
     });
 
@@ -653,11 +740,21 @@
     gameRunning = false;
     stopEngineSound();
     finalScore.textContent = 'Score: ' + score;
+
+    // Sauvegarder le score
+    saveHighScore(playerName, score);
+    displayHighScores(highscoresListEnd);
+    displayHighScores(highscoresList);
+
     gameOverScreen.style.display = 'flex';
     if (spawnInterval) clearInterval(spawnInterval);
   }
 
   function startGame() {
+    const name = nameInput.value.trim();
+    playerName = name || "Joueur";
+    playerNameDisplay.textContent = "Joueur: " + playerName;
+
     if (!audioCtx) initAudio();
     else if (audioCtx.state === 'suspended') audioCtx.resume();
 
@@ -668,33 +765,38 @@
 
     spawnInterval = setInterval(() => {
       if (gameRunning) createEnemy();
-    }, 1550);
+    }, 1500);
   }
 
   startBtn.addEventListener('click', startGame);
+
+  // Permettre d'appuyer sur Entrée pour lancer
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') startGame();
+  });
 
   restartBtn.addEventListener('click', () => {
     enemies.forEach(e => e.remove());
     enemies = [];
     score = 0;
-    speed = 5;
+    speed = 4.5;
     playerX = 181;
-    playerY = 500;
     player.style.left = '181px';
-    player.style.top = '500px';
     scoreDisplay.textContent = 'Score: 0';
+    speedDisplay.textContent = 'Vitesse: 4.5';
     gameOverScreen.style.display = 'none';
-    keys = { left: false, right: false, up: false, down: false };
+    keys = { left: false, right: false, up: false };
     resumeEngineSound();
     gameRunning = true;
     gameLoop();
     spawnInterval = setInterval(() => {
       if (gameRunning) createEnemy();
-    }, 1550);
+    }, 1500);
   });
 
   player.style.top = playerY + 'px';
   player.style.bottom = 'auto';
+
   createLaneLines();
   createPlants();
 </script>
