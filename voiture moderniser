@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Nom + Scores</title>
+<title>Course 2D - Accélération lente</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -335,7 +335,7 @@
     outline: none;
   }
 
-  #start-btn, #restart {
+  #start-btn, #restart, #clear-all-btn {
     padding: 13px 36px;
     font-size: 18px;
     background: #27ae60;
@@ -350,9 +350,17 @@
   #restart { background: #e74c3c; }
   #restart:hover { background: #c0392b; }
 
+  #clear-all-btn {
+    background: #7f8c8d;
+    font-size: 14px;
+    padding: 8px 20px;
+    margin-top: 12px;
+  }
+  #clear-all-btn:hover { background: #95a5a6; }
+
   #highscores {
     margin-top: 20px;
-    width: 280px;
+    width: 300px;
     background: rgba(255,255,255,0.08);
     border-radius: 10px;
     padding: 12px 16px;
@@ -366,10 +374,30 @@
   .score-row {
     display: flex;
     justify-content: space-between;
-    padding: 4px 0;
+    align-items: center;
+    padding: 5px 0;
     border-bottom: 1px solid rgba(255,255,255,0.1);
   }
   .score-row:last-child { border-bottom: none; }
+
+  .delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    flex-shrink: 0;
+  }
+  .delete-btn:hover {
+    background: #c0392b;
+  }
 
   #final-score {
     font-size: 24px;
@@ -414,7 +442,6 @@
   <div id="speed-display">Vitesse: 4.5</div>
   <div id="instructions">← → pour bouger | ↑ maintenir pour accélérer</div>
 
-  <!-- ÉCRAN DE DÉMARRAGE -->
   <div id="start-screen">
     <h1>Course 2D</h1>
     <input type="text" id="name-input" placeholder="Entre ton nom..." maxlength="12" autocomplete="off">
@@ -423,16 +450,17 @@
     <div id="highscores">
       <h3>Meilleurs Scores</h3>
       <div id="highscores-list">Aucun score pour le moment</div>
+      <button id="clear-all-btn">Tout effacer</button>
     </div>
   </div>
 
-  <!-- ÉCRAN GAME OVER -->
   <div id="game-over">
     <h1>GAME OVER</h1>
     <div id="final-score">Score: 0</div>
-    <div id="highscores" style="margin-bottom: 20px;">
+    <div id="highscores" style="margin-bottom: 15px;">
       <h3>Meilleurs Scores</h3>
       <div id="highscores-list-end"></div>
+      <button id="clear-all-btn-end" style="background:#7f8c8d;font-size:14px;padding:8px 20px;margin-top:12px;border:none;border-radius:10px;color:white;cursor:pointer;">Tout effacer</button>
     </div>
     <button id="restart">Rejouer</button>
   </div>
@@ -452,6 +480,8 @@
   const nameInput = document.getElementById('name-input');
   const highscoresList = document.getElementById('highscores-list');
   const highscoresListEnd = document.getElementById('highscores-list-end');
+  const clearAllBtn = document.getElementById('clear-all-btn');
+  const clearAllBtnEnd = document.getElementById('clear-all-btn-end');
   const road = document.getElementById('road');
   const sideLeft = document.getElementById('side-left');
   const sideRight = document.getElementById('side-right');
@@ -461,7 +491,7 @@
   let score = 0;
   let speed = 4.5;
   const minSpeed = 4;
-  const maxSpeed = 16;
+  const maxSpeed = 16;          // on garde 16
   let gameRunning = false;
   let enemies = [];
   let keys = { left: false, right: false, up: false };
@@ -473,7 +503,6 @@
   const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
   const truckColors = ['truck-red', 'truck-blue', 'truck-green', 'truck-yellow', 'truck-gray', 'truck-orange'];
 
-  // ===== GESTION DES SCORES =====
   function getHighScores() {
     const data = localStorage.getItem('course2d_scores');
     return data ? JSON.parse(data) : [];
@@ -483,8 +512,24 @@
     let scores = getHighScores();
     scores.push({ name: name, score: scoreValue });
     scores.sort((a, b) => b.score - a.score);
-    scores = scores.slice(0, 5); // garder top 5
+    scores = scores.slice(0, 5);
     localStorage.setItem('course2d_scores', JSON.stringify(scores));
+  }
+
+  function deleteScore(index) {
+    let scores = getHighScores();
+    scores.splice(index, 1);
+    localStorage.setItem('course2d_scores', JSON.stringify(scores));
+    displayHighScores(highscoresList);
+    displayHighScores(highscoresListEnd);
+  }
+
+  function clearAllScores() {
+    if (confirm("Tu veux vraiment effacer tous les scores ?")) {
+      localStorage.removeItem('course2d_scores');
+      displayHighScores(highscoresList);
+      displayHighScores(highscoresListEnd);
+    }
   }
 
   function displayHighScores(element) {
@@ -494,14 +539,22 @@
       return;
     }
     element.innerHTML = scores.map((s, i) => 
-      `<div class="score-row"><span>${i+1}. ${s.name}</span><span>${s.score}</span></div>`
+      `<div class="score-row">
+        <span>${i+1}. ${s.name}</span>
+        <div style="display:flex;align-items:center;">
+          <span>${s.score}</span>
+          <button class="delete-btn" onclick="deleteScore(${i})" title="Effacer">×</button>
+        </div>
+      </div>`
     ).join('');
   }
 
-  // Afficher les scores au chargement
+  window.deleteScore = deleteScore;
   displayHighScores(highscoresList);
 
-  // ===== SON =====
+  clearAllBtn.addEventListener('click', clearAllScores);
+  clearAllBtnEnd.addEventListener('click', clearAllScores);
+
   let audioCtx = null;
   let engineOsc = null;
   let engineGain = null;
@@ -692,11 +745,12 @@
     if (keys.right && playerX < 314) playerX += moveSpeed;
     player.style.left = playerX + 'px';
 
+    // Accélération beaucoup plus lente
     if (keys.up) {
-      speed += 0.028;
+      speed += 0.012;               // très doux
       if (speed > maxSpeed) speed = maxSpeed;
     } else {
-      speed -= 0.022;
+      speed -= 0.015;
       if (speed < minSpeed) speed = minSpeed;
     }
 
@@ -741,12 +795,25 @@
     stopEngineSound();
     finalScore.textContent = 'Score: ' + score;
 
-    // Sauvegarder le score
     saveHighScore(playerName, score);
     displayHighScores(highscoresListEnd);
     displayHighScores(highscoresList);
 
     gameOverScreen.style.display = 'flex';
+    if (spawnInterval) clearInterval(spawnInterval);
+  }
+
+  function resetGameState() {
+    enemies.forEach(e => e.remove());
+    enemies = [];
+    score = 0;
+    speed = 4.5;
+    playerX = 181;
+    player.style.left = '181px';
+    scoreDisplay.textContent = 'Score: 0';
+    speedDisplay.textContent = 'Vitesse: 4.5';
+    playerNameDisplay.textContent = '';
+    keys = { left: false, right: false, up: false };
     if (spawnInterval) clearInterval(spawnInterval);
   }
 
@@ -760,6 +827,7 @@
 
     resumeEngineSound();
     startScreen.style.display = 'none';
+    gameOverScreen.style.display = 'none';
     gameRunning = true;
     gameLoop();
 
@@ -770,28 +838,18 @@
 
   startBtn.addEventListener('click', startGame);
 
-  // Permettre d'appuyer sur Entrée pour lancer
   nameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') startGame();
   });
 
   restartBtn.addEventListener('click', () => {
-    enemies.forEach(e => e.remove());
-    enemies = [];
-    score = 0;
-    speed = 4.5;
-    playerX = 181;
-    player.style.left = '181px';
-    scoreDisplay.textContent = 'Score: 0';
-    speedDisplay.textContent = 'Vitesse: 4.5';
+    resetGameState();
+    stopEngineSound();
     gameOverScreen.style.display = 'none';
-    keys = { left: false, right: false, up: false };
-    resumeEngineSound();
-    gameRunning = true;
-    gameLoop();
-    spawnInterval = setInterval(() => {
-      if (gameRunning) createEnemy();
-    }, 1500);
+    startScreen.style.display = 'flex';
+    nameInput.value = '';
+    nameInput.focus();
+    displayHighScores(highscoresList);
   });
 
   player.style.top = playerY + 'px';
