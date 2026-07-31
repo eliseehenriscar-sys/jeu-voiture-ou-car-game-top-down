@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Accélération lente</title>
+<title>Course 2D - Pause + Frein</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -300,6 +300,27 @@
     color: #f1c40f;
   }
 
+  #pause-screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 35;
+  }
+  #pause-screen h2 {
+    font-size: 42px;
+    color: #f1c40f;
+    margin-bottom: 15px;
+  }
+  #pause-screen p {
+    font-size: 16px;
+    color: #ccc;
+  }
+
   #game-over, #start-screen {
     position: absolute;
     top: 0; left: 0;
@@ -440,7 +461,13 @@
   <div id="score">Score: 0</div>
   <div id="player-name-display"></div>
   <div id="speed-display">Vitesse: 4.5</div>
-  <div id="instructions">← → pour bouger | ↑ maintenir pour accélérer</div>
+  <div id="instructions">← → bouger | ↑ accélérer | ↓ freiner | Espace = pause</div>
+
+  <!-- Écran Pause -->
+  <div id="pause-screen">
+    <h2>PAUSE</h2>
+    <p>Appuie sur Espace pour continuer</p>
+  </div>
 
   <div id="start-screen">
     <h1>Course 2D</h1>
@@ -482,6 +509,7 @@
   const highscoresListEnd = document.getElementById('highscores-list-end');
   const clearAllBtn = document.getElementById('clear-all-btn');
   const clearAllBtnEnd = document.getElementById('clear-all-btn-end');
+  const pauseScreen = document.getElementById('pause-screen');
   const road = document.getElementById('road');
   const sideLeft = document.getElementById('side-left');
   const sideRight = document.getElementById('side-right');
@@ -491,10 +519,11 @@
   let score = 0;
   let speed = 4.5;
   const minSpeed = 4;
-  const maxSpeed = 16;          // on garde 16
+  const maxSpeed = 16;
   let gameRunning = false;
+  let isPaused = false;
   let enemies = [];
-  let keys = { left: false, right: false, up: false };
+  let keys = { left: false, right: false, up: false, down: false };
   let laneLines = [];
   let plants = [];
   let spawnInterval = null;
@@ -730,27 +759,53 @@
     if (e.key === 'ArrowLeft')  keys.left = true;
     if (e.key === 'ArrowRight') keys.right = true;
     if (e.key === 'ArrowUp')    keys.up = true;
+    if (e.key === 'ArrowDown')  keys.down = true;
+
+    // Pause avec Espace
+    if (e.code === 'Space' && gameRunning) {
+      e.preventDefault();
+      togglePause();
+    }
   });
+
   document.addEventListener('keyup', (e) => {
     if (e.key === 'ArrowLeft')  keys.left = false;
     if (e.key === 'ArrowRight') keys.right = false;
     if (e.key === 'ArrowUp')    keys.up = false;
+    if (e.key === 'ArrowDown')  keys.down = false;
   });
+
+  function togglePause() {
+    isPaused = !isPaused;
+    if (isPaused) {
+      pauseScreen.style.display = 'flex';
+      stopEngineSound();
+    } else {
+      pauseScreen.style.display = 'none';
+      resumeEngineSound();
+    }
+  }
 
   function gameLoop() {
     if (!gameRunning) return;
+    requestAnimationFrame(gameLoop);
+
+    if (isPaused) return;  // on arrête tout pendant la pause
 
     const moveSpeed = 5.5;
     if (keys.left && playerX > 48)  playerX -= moveSpeed;
     if (keys.right && playerX < 314) playerX += moveSpeed;
     player.style.left = playerX + 'px';
 
-    // Accélération beaucoup plus lente
+    // Accélération / Freinage
     if (keys.up) {
-      speed += 0.012;               // très doux
+      speed += 0.012;
       if (speed > maxSpeed) speed = maxSpeed;
+    } else if (keys.down) {
+      speed -= 0.04;          // frein plus fort
+      if (speed < minSpeed) speed = minSpeed;
     } else {
-      speed -= 0.015;
+      speed -= 0.015;         // ralentissement normal
       if (speed < minSpeed) speed = minSpeed;
     }
 
@@ -775,8 +830,6 @@
         scoreDisplay.textContent = 'Score: ' + score;
       }
     });
-
-    requestAnimationFrame(gameLoop);
   }
 
   function checkCollision(a, b) {
@@ -792,6 +845,8 @@
 
   function endGame() {
     gameRunning = false;
+    isPaused = false;
+    pauseScreen.style.display = 'none';
     stopEngineSound();
     finalScore.textContent = 'Score: ' + score;
 
@@ -813,7 +868,9 @@
     scoreDisplay.textContent = 'Score: 0';
     speedDisplay.textContent = 'Vitesse: 4.5';
     playerNameDisplay.textContent = '';
-    keys = { left: false, right: false, up: false };
+    keys = { left: false, right: false, up: false, down: false };
+    isPaused = false;
+    pauseScreen.style.display = 'none';
     if (spawnInterval) clearInterval(spawnInterval);
   }
 
@@ -828,11 +885,13 @@
     resumeEngineSound();
     startScreen.style.display = 'none';
     gameOverScreen.style.display = 'none';
+    isPaused = false;
+    pauseScreen.style.display = 'none';
     gameRunning = true;
     gameLoop();
 
     spawnInterval = setInterval(() => {
-      if (gameRunning) createEnemy();
+      if (gameRunning && !isPaused) createEnemy();
     }, 1500);
   }
 
