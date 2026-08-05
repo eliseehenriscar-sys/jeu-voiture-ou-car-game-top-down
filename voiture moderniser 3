@@ -1,1 +1,1129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Course 2D - Vieux arbres dans le désert</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  body {
+    background: #0f0f0f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+  }
+
+  #game-container {
+    position: relative;
+    width: 420px;
+    height: 650px;
+    background: #1a1a1a;
+    border: 5px solid #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.9);
+  }
+
+  #road {
+    position: absolute;
+    left: 50px;
+    width: 320px;
+    height: 100%;
+    background: #3a3a3a;
+    transition: background 1.5s ease;
+  }
+
+  .bridge-rail {
+    position: absolute;
+    width: 8px;
+    height: 100%;
+    background: #555;
+    top: 0;
+    display: none;
+    z-index: 5;
+  }
+  .bridge-rail.left  { left: 50px; }
+  .bridge-rail.right { left: 362px; }
+
+  .bridge-post {
+    position: absolute;
+    width: 10px;
+    height: 28px;
+    background: #666;
+    border-radius: 2px;
+  }
+
+  .lane-line {
+    position: absolute;
+    width: 5px;
+    height: 45px;
+    background: #fff;
+    border-radius: 3px;
+  }
+  .lane-line.left  { left: 103px; }
+  .lane-line.right { left: 212px; }
+
+  .side {
+    position: absolute;
+    top: 0;
+    width: 50px;
+    height: 100%;
+    overflow: hidden;
+    transition: background 1.8s ease;
+  }
+  .side.left  { left: 0; }
+  .side.right { right: 0; }
+
+  .deco {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  /* Forêt */
+  .bush {
+    width: 18px;
+    height: 18px;
+    background: #2d8a3e;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0,0,0,0.35);
+  }
+  .tree {
+    width: 24px;
+    height: 24px;
+    background: #1f6b2e;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0,0,0,0.4);
+  }
+  .tree::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 10px;
+    background: #5c3a1e;
+    border-radius: 2px;
+  }
+
+  /* Désert */
+  .dune {
+    width: 38px;
+    height: 12px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 50%;
+    left: 6px;
+  }
+  .cactus {
+    width: 8px;
+    height: 22px;
+    background: #2d8a3e;
+    border-radius: 3px;
+  }
+  .cactus::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: -6px;
+    width: 10px;
+    height: 6px;
+    background: #2d8a3e;
+    border-radius: 3px;
+  }
+
+  /* Vieux arbres du désert */
+  .old-tree {
+    width: 6px;
+    height: 28px;
+    background: #5c4033;
+    border-radius: 2px;
+    position: relative;
+  }
+  .old-tree::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: -8px;
+    width: 16px;
+    height: 4px;
+    background: #6b4c3a;
+    border-radius: 2px;
+    transform: rotate(-25deg);
+  }
+  .old-tree::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: -5px;
+    width: 14px;
+    height: 3px;
+    background: #6b4c3a;
+    border-radius: 2px;
+    transform: rotate(20deg);
+  }
+
+  /* ===== VOITURES ===== */
+  .car {
+    position: absolute;
+    width: 48px;
+    height: 92px;
+    z-index: 10;
+  }
+  .car .body {
+    position: absolute;
+    width: 48px;
+    height: 84px;
+    border-radius: 14px 14px 8px 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+  }
+  .car .roof {
+    position: absolute;
+    top: 18px; left: 6px;
+    width: 36px; height: 34px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px 8px 5px 5px;
+  }
+  .car .windshield {
+    position: absolute;
+    top: 13px; left: 7px;
+    width: 34px; height: 18px;
+    background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
+    border-radius: 6px 6px 2px 2px;
+    border: 1px solid rgba(0,0,0,0.25);
+  }
+  .car .rear-window {
+    position: absolute;
+    top: 48px; left: 7px;
+    width: 34px; height: 13px;
+    background: linear-gradient(to bottom, #7ec8ff, #3a8de0);
+    border-radius: 2px 2px 5px 5px;
+    border: 1px solid rgba(0,0,0,0.25);
+  }
+  .car .headlight {
+    position: absolute;
+    top: 3px; width: 10px; height: 6px;
+    background: #fff8dc;
+    border-radius: 2px;
+    box-shadow: 0 0 6px #fff8dc, 0 0 12px #ffeaa7;
+  }
+  .car .headlight.left  { left: 6px; }
+  .car .headlight.right { right: 6px; }
+  .car .taillight {
+    position: absolute;
+    bottom: 5px; width: 10px; height: 5px;
+    background: #ff3b3b;
+    border-radius: 2px;
+    box-shadow: 0 0 5px #ff3b3b;
+  }
+  .car .taillight.left  { left: 6px; }
+  .car .taillight.right { right: 6px; }
+  .car .mirror {
+    position: absolute;
+    top: 22px; width: 6px; height: 4px;
+    background: #222;
+    border-radius: 1px;
+  }
+  .car .mirror.left  { left: -4px; }
+  .car .mirror.right { right: -4px; }
+  .car .wheel {
+    position: absolute;
+    width: 11px; height: 18px;
+    background: #111;
+    border-radius: 3px;
+    border: 2px solid #444;
+    z-index: 2;
+  }
+  .car .wheel.front-left  { top: 12px; left: -5px; }
+  .car .wheel.front-right { top: 12px; right: -5px; }
+  .car .wheel.rear-left   { bottom: 12px; left: -5px; }
+  .car .wheel.rear-right  { bottom: 12px; right: -5px; }
+  .car .wheel::after {
+    content: '';
+    position: absolute;
+    top: 4px; left: 2px;
+    width: 4px; height: 7px;
+    background: #999;
+    border-radius: 1px;
+  }
+  .car .light-beam {
+    position: absolute;
+    top: -48px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 50px;
+    background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.4) 0%, rgba(255, 230, 120, 0.15) 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(3px);
+  }
+
+  .truck {
+    position: absolute;
+    width: 54px;
+    height: 125px;
+    z-index: 10;
+  }
+  .truck .body {
+    position: absolute;
+    width: 54px;
+    height: 116px;
+    border-radius: 7px 7px 5px 5px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+  }
+  .truck .cabin {
+    position: absolute;
+    top: 6px; left: 5px;
+    width: 44px; height: 32px;
+    background: rgba(0,0,0,0.22);
+    border-radius: 5px;
+  }
+  .truck .windshield {
+    position: absolute;
+    top: 10px; left: 8px;
+    width: 38px; height: 20px;
+    background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.25);
+  }
+  .truck .headlight {
+    position: absolute;
+    top: 3px; width: 12px; height: 7px;
+    background: #fff8dc;
+    border-radius: 2px;
+    box-shadow: 0 0 6px #fff8dc, 0 0 12px #ffeaa7;
+  }
+  .truck .headlight.left  { left: 6px; }
+  .truck .headlight.right { right: 6px; }
+  .truck .taillight {
+    position: absolute;
+    bottom: 5px; width: 12px; height: 6px;
+    background: #ff3b3b;
+    border-radius: 2px;
+    box-shadow: 0 0 5px #ff3b3b;
+  }
+  .truck .taillight.left  { left: 6px; }
+  .truck .taillight.right { right: 6px; }
+  .truck .wheel {
+    position: absolute;
+    width: 12px; height: 20px;
+    background: #111;
+    border-radius: 3px;
+    border: 2px solid #444;
+    z-index: 2;
+  }
+  .truck .wheel.front-left  { top: 14px; left: -6px; }
+  .truck .wheel.front-right { top: 14px; right: -6px; }
+  .truck .wheel.rear-left   { bottom: 12px; left: -6px; }
+  .truck .wheel.rear-right  { bottom: 12px; right: -6px; }
+  .truck .wheel::after {
+    content: '';
+    position: absolute;
+    top: 5px; left: 2px;
+    width: 5px; height: 8px;
+    background: #999;
+    border-radius: 1px;
+  }
+  .truck .light-beam {
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 58px;
+    background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.45) 0%, rgba(255, 230, 120, 0.18) 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(4px);
+  }
+
+  .enemy { transform: rotate(180deg); }
+
+  #player .body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
+
+  .enemy.green .body   { background: linear-gradient(to bottom, #00b894, #00916e); }
+  .enemy.blue .body    { background: linear-gradient(to bottom, #0984e3, #0652dd); }
+  .enemy.yellow .body  { background: linear-gradient(to bottom, #f1c40f, #e67e22); }
+  .enemy.purple .body  { background: linear-gradient(to bottom, #a29bfe, #6c5ce7); }
+  .enemy.orange .body  { background: linear-gradient(to bottom, #e67e22, #d35400); }
+  .enemy.pink .body    { background: linear-gradient(to bottom, #fd79a8, #e84393); }
+  .enemy.cyan .body    { background: linear-gradient(to bottom, #00cec9, #00b5b0); }
+  .enemy.white .body   { background: linear-gradient(to bottom, #dfe6e9, #b2bec3); }
+
+  .enemy.truck-red .body    { background: linear-gradient(to bottom, #c0392b, #922b21); }
+  .enemy.truck-blue .body   { background: linear-gradient(to bottom, #2980b9, #1a5276); }
+  .enemy.truck-green .body  { background: linear-gradient(to bottom, #27ae60, #1e8449); }
+  .enemy.truck-yellow .body { background: linear-gradient(to bottom, #f39c12, #d68910); }
+  .enemy.truck-gray .body   { background: linear-gradient(to bottom, #7f8c8d, #5d6d7e); }
+  .enemy.truck-orange .body { background: linear-gradient(to bottom, #e67e22, #ca6f1e); }
+
+  #score {
+    position: absolute;
+    top: 18px; left: 18px;
+    font-size: 22px; font-weight: bold;
+    z-index: 20;
+    text-shadow: 2px 2px 6px black;
+  }
+
+  #player-name-display {
+    position: absolute;
+    top: 48px; left: 18px;
+    font-size: 15px;
+    z-index: 20;
+    color: #ddd;
+    text-shadow: 1px 1px 4px black;
+  }
+
+  #speed-display {
+    position: absolute;
+    top: 18px; right: 18px;
+    font-size: 17px; font-weight: bold;
+    z-index: 20;
+    text-shadow: 2px 2px 6px black;
+    color: #f1c40f;
+  }
+
+  #location-display {
+    position: absolute;
+    top: 48px; right: 18px;
+    font-size: 12px;
+    z-index: 20;
+    color: #7fdbff;
+    text-shadow: 1px 1px 4px black;
+    max-width: 140px;
+    text-align: right;
+  }
+
+  #pause-screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 35;
+  }
+  #pause-screen h2 {
+    font-size: 42px;
+    color: #f1c40f;
+    margin-bottom: 15px;
+  }
+  #pause-screen p {
+    font-size: 16px;
+    color: #ccc;
+  }
+
+  #game-over, #start-screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 40;
+  }
+
+  #game-over { display: none; }
+
+  #start-screen h1, #game-over h1 {
+    font-size: 34px;
+    margin-bottom: 15px;
+  }
+
+  #game-over h1 {
+    color: #e74c3c;
+    text-shadow: 0 0 20px #e74c3c;
+  }
+
+  #name-input {
+    padding: 12px 18px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    width: 240px;
+    text-align: center;
+    margin-bottom: 18px;
+    outline: none;
+  }
+
+  #start-btn, #restart, #clear-all-btn {
+    padding: 13px 36px;
+    font-size: 18px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  #start-btn:hover, #restart:hover { background: #219a52; }
+  #restart { background: #e74c3c; }
+  #restart:hover { background: #c0392b; }
+
+  #clear-all-btn {
+    background: #7f8c8d;
+    font-size: 14px;
+    padding: 8px 20px;
+    margin-top: 12px;
+  }
+  #clear-all-btn:hover { background: #95a5a6; }
+
+  #highscores {
+    margin-top: 20px;
+    width: 300px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  #highscores h3 {
+    margin-bottom: 10px;
+    color: #f1c40f;
+    text-align: center;
+  }
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .score-row:last-child { border-bottom: none; }
+
+  .delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    flex-shrink: 0;
+  }
+  .delete-btn:hover { background: #c0392b; }
+
+  #final-score {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  #instructions {
+    position: absolute;
+    bottom: 12px; width: 100%;
+    text-align: center; font-size: 12px;
+    color: #bbb; z-index: 15;
+  }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+  <div class="side left" id="side-left"></div>
+  <div class="side right" id="side-right"></div>
+
+  <div class="bridge-rail left" id="rail-left"></div>
+  <div class="bridge-rail right" id="rail-right"></div>
+
+  <div id="road"></div>
+
+  <div id="player" class="car">
+    <div class="light-beam"></div>
+    <div class="body"></div>
+    <div class="roof"></div>
+    <div class="windshield"></div>
+    <div class="rear-window"></div>
+    <div class="headlight left"></div>
+    <div class="headlight right"></div>
+    <div class="taillight left"></div>
+    <div class="taillight right"></div>
+    <div class="mirror left"></div>
+    <div class="mirror right"></div>
+    <div class="wheel front-left"></div>
+    <div class="wheel front-right"></div>
+    <div class="wheel rear-left"></div>
+    <div class="wheel rear-right"></div>
+  </div>
+
+  <div id="score">Score: 0</div>
+  <div id="player-name-display"></div>
+  <div id="speed-display">Vitesse: 4.5</div>
+  <div id="location-display">Forêt Alpine</div>
+  <div id="instructions">← → bouger | ↑ accélérer | ↓ freiner | Espace = pause</div>
+
+  <div id="pause-screen">
+    <h2>PAUSE</h2>
+    <p>Appuie sur Espace pour continuer</p>
+  </div>
+
+  <div id="start-screen">
+    <h1>Course 2D</h1>
+    <input type="text" id="name-input" placeholder="Entre ton nom..." maxlength="12" autocomplete="off">
+    <button id="start-btn">Jouer</button>
+
+    <div id="highscores">
+      <h3>Meilleurs Scores</h3>
+      <div id="highscores-list">Aucun score pour le moment</div>
+      <button id="clear-all-btn">Tout effacer</button>
+    </div>
+  </div>
+
+  <div id="game-over">
+    <h1>GAME OVER</h1>
+    <div id="final-score">Score: 0</div>
+    <div id="highscores" style="margin-bottom: 15px;">
+      <h3>Meilleurs Scores</h3>
+      <div id="highscores-list-end"></div>
+      <button id="clear-all-btn-end" style="background:#7f8c8d;font-size:14px;padding:8px 20px;margin-top:12px;border:none;border-radius:10px;color:white;cursor:pointer;">Tout effacer</button>
+    </div>
+    <button id="restart">Rejouer</button>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('game-container');
+  const player = document.getElementById('player');
+  const scoreDisplay = document.getElementById('score');
+  const playerNameDisplay = document.getElementById('player-name-display');
+  const speedDisplay = document.getElementById('speed-display');
+  const locationDisplay = document.getElementById('location-display');
+  const gameOverScreen = document.getElementById('game-over');
+  const finalScore = document.getElementById('final-score');
+  const restartBtn = document.getElementById('restart');
+  const startScreen = document.getElementById('start-screen');
+  const startBtn = document.getElementById('start-btn');
+  const nameInput = document.getElementById('name-input');
+  const highscoresList = document.getElementById('highscores-list');
+  const highscoresListEnd = document.getElementById('highscores-list-end');
+  const clearAllBtn = document.getElementById('clear-all-btn');
+  const clearAllBtnEnd = document.getElementById('clear-all-btn-end');
+  const pauseScreen = document.getElementById('pause-screen');
+  const road = document.getElementById('road');
+  const sideLeft = document.getElementById('side-left');
+  const sideRight = document.getElementById('side-right');
+  const railLeft = document.getElementById('rail-left');
+  const railRight = document.getElementById('rail-right');
+
+  let playerX = 186;
+  const playerY = 490;
+  let score = 0;
+  let speed = 4.5;
+  const minSpeed = 4;
+  const maxSpeed = 16;
+  let gameRunning = false;
+  let isPaused = false;
+  let enemies = [];
+  let keys = { left: false, right: false, up: false, down: false };
+  let laneLines = [];
+  let sideDecos = [];
+  let spawnInterval = null;
+  let playerName = "Joueur";
+  let currentLocation = 0;
+  let lastLocationScore = 0;
+  let currentType = "forest";
+
+  const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
+  const truckColors = ['truck-red', 'truck-blue', 'truck-green', 'truck-yellow', 'truck-gray', 'truck-orange'];
+
+  const locations = [
+    { name: "Forêt Alpine", type: "forest", bg: "#1e5c2e", road: "#3a3a3a" },
+    { name: "Forêt Tropicale", type: "forest", bg: "#166534", road: "#353535" },
+    { name: "Côte Méditerranéenne", type: "sea", bg: "linear-gradient(to bottom, #0a3d5c, #0d5a7a, #0a4a6a)", road: "#4a4a4a" },
+    { name: "Désert du Sahara", type: "desert", bg: "linear-gradient(to right, #d4a84b, #e8c97a, #d4a84b)", road: "#4a4030" },
+    { name: "Riviera Italienne", type: "sea", bg: "linear-gradient(to bottom, #0b4a6a, #0f6a8a, #0b5a7a)", road: "#4a4a4a" },
+    { name: "Désert d'Arabie", type: "desert", bg: "linear-gradient(to right, #c9953a, #e0b85a, #c9953a)", road: "#4a4030" },
+    { name: "Forêt Canadienne", type: "forest", bg: "#14532d", road: "#383838" },
+    { name: "Caraïbes", type: "sea", bg: "linear-gradient(to bottom, #0a5a6a, #0d8a9a, #0a6a7a)", road: "#4a4a4a" },
+    { name: "Désert Mojave", type: "desert", bg: "linear-gradient(to right, #c4a35a, #dfc07a, #c4a35a)", road: "#4a4030" }
+  ];
+
+  function createDeco(type, topPos, sideEl) {
+    const deco = document.createElement('div');
+    deco.classList.add('deco');
+
+    if (type === "forest") {
+      deco.classList.add(Math.random() > 0.4 ? 'tree' : 'bush');
+      deco.style.left = (6 + Math.random() * 14) + 'px';
+    } else if (type === "sea") {
+      return; // pas de décoration, juste la mer
+    } else if (type === "desert") {
+      const r = Math.random();
+      if (r < 0.35) {
+        // Vieux arbre
+        deco.classList.add('old-tree');
+        deco.style.left = (10 + Math.random() * 20) + 'px';
+      } else if (r < 0.55) {
+        // Cactus
+        deco.classList.add('cactus');
+        deco.style.left = (12 + Math.random() * 18) + 'px';
+      } else {
+        // Dune
+        deco.classList.add('dune');
+      }
+    }
+
+    deco.style.top = topPos + 'px';
+    sideEl.appendChild(deco);
+    sideDecos.push({ el: deco, side: sideEl });
+  }
+
+  function setBridge(active) {
+    if (active) {
+      railLeft.style.display = 'block';
+      railRight.style.display = 'block';
+      railLeft.innerHTML = '';
+      railRight.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const postL = document.createElement('div');
+        postL.className = 'bridge-post';
+        postL.style.top = (i * 55) + 'px';
+        postL.style.left = '-1px';
+        railLeft.appendChild(postL);
+
+        const postR = document.createElement('div');
+        postR.className = 'bridge-post';
+        postR.style.top = (i * 55) + 'px';
+        postR.style.left = '-1px';
+        railRight.appendChild(postR);
+      }
+    } else {
+      railLeft.style.display = 'none';
+      railRight.style.display = 'none';
+      railLeft.innerHTML = '';
+      railRight.innerHTML = '';
+    }
+  }
+
+  function initSides() {
+    sideLeft.innerHTML = '';
+    sideRight.innerHTML = '';
+    sideDecos = [];
+
+    const loc = locations[0];
+    currentType = loc.type;
+    sideLeft.style.background = loc.bg;
+    sideRight.style.background = loc.bg;
+    road.style.background = loc.road;
+    locationDisplay.textContent = loc.name;
+    setBridge(false);
+
+    for (let i = 0; i < 12; i++) {
+      createDeco(currentType, i * 60 - 40, sideLeft);
+      createDeco(currentType, i * 60 - 30, sideRight);
+    }
+  }
+
+  function changeLocation() {
+    currentLocation = (currentLocation + 1) % locations.length;
+    const loc = locations[currentLocation];
+
+    currentType = loc.type;
+    locationDisplay.textContent = loc.name;
+
+    sideLeft.style.background = loc.bg;
+    sideRight.style.background = loc.bg;
+    road.style.background = loc.road;
+
+    setBridge(loc.type === "sea");
+  }
+
+  function moveSides() {
+    for (let i = sideDecos.length - 1; i >= 0; i--) {
+      const item = sideDecos[i];
+      let top = parseFloat(item.el.style.top) || 0;
+      top += speed * 1.5;
+      item.el.style.top = top + 'px';
+
+      if (top > 660) {
+        item.el.remove();
+        sideDecos.splice(i, 1);
+        createDeco(currentType, -40, item.side);
+      }
+    }
+  }
+
+  function getHighScores() {
+    const data = localStorage.getItem('course2d_scores');
+    return data ? JSON.parse(data) : [];
+  }
+
+  function saveHighScore(name, scoreValue) {
+    let scores = getHighScores();
+    scores.push({ name: name, score: scoreValue });
+    scores.sort((a, b) => b.score - a.score);
+    scores = scores.slice(0, 5);
+    localStorage.setItem('course2d_scores', JSON.stringify(scores));
+  }
+
+  function deleteScore(index) {
+    let scores = getHighScores();
+    scores.splice(index, 1);
+    localStorage.setItem('course2d_scores', JSON.stringify(scores));
+    displayHighScores(highscoresList);
+    displayHighScores(highscoresListEnd);
+  }
+
+  function clearAllScores() {
+    if (confirm("Tu veux vraiment effacer tous les scores ?")) {
+      localStorage.removeItem('course2d_scores');
+      displayHighScores(highscoresList);
+      displayHighScores(highscoresListEnd);
+    }
+  }
+
+  function displayHighScores(element) {
+    const scores = getHighScores();
+    if (scores.length === 0) {
+      element.innerHTML = '<div style="text-align:center;color:#aaa;">Aucun score</div>';
+      return;
+    }
+    element.innerHTML = scores.map((s, i) => 
+      `<div class="score-row">
+        <span>${i+1}. ${s.name}</span>
+        <div style="display:flex;align-items:center;">
+          <span>${s.score}</span>
+          <button class="delete-btn" onclick="deleteScore(${i})" title="Effacer">×</button>
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  window.deleteScore = deleteScore;
+  displayHighScores(highscoresList);
+
+  clearAllBtn.addEventListener('click', clearAllScores);
+  clearAllBtnEnd.addEventListener('click', clearAllScores);
+
+  let audioCtx = null;
+  let engineOsc = null;
+  let engineGain = null;
+  let engineFilter = null;
+  let noiseNode = null;
+  let noiseGain = null;
+
+  function initAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    engineOsc = audioCtx.createOscillator();
+    engineOsc.type = 'sawtooth';
+    engineOsc.frequency.value = 95;
+
+    engineFilter = audioCtx.createBiquadFilter();
+    engineFilter.type = 'lowpass';
+    engineFilter.frequency.value = 700;
+
+    engineGain = audioCtx.createGain();
+    engineGain.gain.value = 0.12;
+
+    engineOsc.connect(engineFilter);
+    engineFilter.connect(engineGain);
+    engineGain.connect(audioCtx.destination);
+
+    const bufferSize = audioCtx.sampleRate * 2;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = buffer;
+    noiseNode.loop = true;
+
+    noiseGain = audioCtx.createGain();
+    noiseGain.gain.value = 0.028;
+
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.value = 320;
+
+    noiseNode.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+
+    engineOsc.start();
+    noiseNode.start();
+  }
+
+  function updateEngineSound() {
+    if (!audioCtx || !engineOsc) return;
+    const baseFreq = 90 + (speed * 10);
+    engineOsc.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.1);
+    engineFilter.frequency.setTargetAtTime(500 + speed * 45, audioCtx.currentTime, 0.1);
+  }
+
+  function stopEngineSound() {
+    if (engineGain) engineGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+    if (noiseGain) noiseGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+  }
+
+  function resumeEngineSound() {
+    if (engineGain) engineGain.gain.setTargetAtTime(0.12, audioCtx.currentTime, 0.1);
+    if (noiseGain) noiseGain.gain.setTargetAtTime(0.028, audioCtx.currentTime, 0.1);
+  }
+
+  function createLaneLines() {
+    for (let i = 0; i < 14; i++) {
+      const lineL = document.createElement('div');
+      lineL.classList.add('lane-line', 'left');
+      lineL.style.top = (i * 70 - 40) + 'px';
+      road.appendChild(lineL);
+      laneLines.push(lineL);
+
+      const lineR = document.createElement('div');
+      lineR.classList.add('lane-line', 'right');
+      lineR.style.top = (i * 70 - 40) + 'px';
+      road.appendChild(lineR);
+      laneLines.push(lineR);
+    }
+  }
+
+  function moveEnvironment() {
+    laneLines.forEach(line => {
+      let top = parseFloat(line.style.top);
+      top += speed * 1.5;
+      if (top > 650) top = -50;
+      line.style.top = top + 'px';
+    });
+    moveSides();
+  }
+
+  function createEnemy() {
+    const isTruck = Math.random() < 0.28;
+    const enemy = document.createElement('div');
+
+    if (isTruck) {
+      enemy.classList.add('truck', 'enemy');
+      const color = truckColors[Math.floor(Math.random() * truckColors.length)];
+      enemy.classList.add(color);
+
+      enemy.innerHTML = `
+        <div class="light-beam"></div>
+        <div class="body"></div>
+        <div class="cabin"></div>
+        <div class="windshield"></div>
+        <div class="headlight left"></div>
+        <div class="headlight right"></div>
+        <div class="taillight left"></div>
+        <div class="taillight right"></div>
+        <div class="wheel front-left"></div>
+        <div class="wheel front-right"></div>
+        <div class="wheel rear-left"></div>
+        <div class="wheel rear-right"></div>
+      `;
+    } else {
+      enemy.classList.add('car', 'enemy');
+      const color = carColors[Math.floor(Math.random() * carColors.length)];
+      enemy.classList.add(color);
+
+      enemy.innerHTML = `
+        <div class="light-beam"></div>
+        <div class="body"></div>
+        <div class="roof"></div>
+        <div class="windshield"></div>
+        <div class="rear-window"></div>
+        <div class="headlight left"></div>
+        <div class="headlight right"></div>
+        <div class="taillight left"></div>
+        <div class="taillight right"></div>
+        <div class="mirror left"></div>
+        <div class="mirror right"></div>
+        <div class="wheel front-left"></div>
+        <div class="wheel front-right"></div>
+        <div class="wheel rear-left"></div>
+        <div class="wheel rear-right"></div>
+      `;
+    }
+
+    const positions = [75, 186, 297];
+    enemy.style.left = positions[Math.floor(Math.random() * 3)] + 'px';
+    enemy.style.top = isTruck ? '-140px' : '-110px';
+
+    container.appendChild(enemy);
+    enemies.push(enemy);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  keys.left = true;
+    if (e.key === 'ArrowRight') keys.right = true;
+    if (e.key === 'ArrowUp')    keys.up = true;
+    if (e.key === 'ArrowDown')  keys.down = true;
+
+    if (e.code === 'Space' && gameRunning) {
+      e.preventDefault();
+      togglePause();
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft')  keys.left = false;
+    if (e.key === 'ArrowRight') keys.right = false;
+    if (e.key === 'ArrowUp')    keys.up = false;
+    if (e.key === 'ArrowDown')  keys.down = false;
+  });
+
+  function togglePause() {
+    isPaused = !isPaused;
+    if (isPaused) {
+      pauseScreen.style.display = 'flex';
+      stopEngineSound();
+    } else {
+      pauseScreen.style.display = 'none';
+      resumeEngineSound();
+    }
+  }
+
+  function gameLoop() {
+    if (!gameRunning) return;
+    requestAnimationFrame(gameLoop);
+
+    if (isPaused) return;
+
+    const moveSpeed = 5.5;
+    if (keys.left && playerX > 55)  playerX -= moveSpeed;
+    if (keys.right && playerX < 317) playerX += moveSpeed;
+    player.style.left = playerX + 'px';
+
+    if (keys.up) {
+      speed += 0.012;
+      if (speed > maxSpeed) speed = maxSpeed;
+    } else if (keys.down) {
+      speed -= 0.04;
+      if (speed < minSpeed) speed = minSpeed;
+    } else {
+      speed -= 0.015;
+      if (speed < minSpeed) speed = minSpeed;
+    }
+
+    speedDisplay.textContent = 'Vitesse: ' + speed.toFixed(1);
+
+    if (score - lastLocationScore >= 130) {
+      lastLocationScore = score;
+      changeLocation();
+    }
+
+    moveEnvironment();
+    updateEngineSound();
+
+    enemies.forEach((enemy, index) => {
+      let top = parseFloat(enemy.style.top) || 0;
+      top += speed;
+      enemy.style.top = top + 'px';
+
+      if (checkCollision(player, enemy)) {
+        endGame();
+      }
+
+      if (top > 700) {
+        enemy.remove();
+        enemies.splice(index, 1);
+        score += enemy.classList.contains('truck') ? 20 : 10;
+        scoreDisplay.textContent = 'Score: ' + score;
+      }
+    });
+  }
+
+  function checkCollision(a, b) {
+    const aRect = a.getBoundingClientRect();
+    const bRect = b.getBoundingClientRect();
+    return !(
+      aRect.bottom - 18 < bRect.top ||
+      aRect.top + 12 > bRect.bottom ||
+      aRect.right - 10 < bRect.left ||
+      aRect.left + 10 > bRect.right
+    );
+  }
+
+  function endGame() {
+    gameRunning = false;
+    isPaused = false;
+    pauseScreen.style.display = 'none';
+    stopEngineSound();
+    finalScore.textContent = 'Score: ' + score;
+
+    saveHighScore(playerName, score);
+    displayHighScores(highscoresListEnd);
+    displayHighScores(highscoresList);
+
+    gameOverScreen.style.display = 'flex';
+    if (spawnInterval) clearInterval(spawnInterval);
+  }
+
+  function resetGameState() {
+    enemies.forEach(e => e.remove());
+    enemies = [];
+    score = 0;
+    speed = 4.5;
+    playerX = 186;
+    player.style.left = '186px';
+    scoreDisplay.textContent = 'Score: 0';
+    speedDisplay.textContent = 'Vitesse: 4.5';
+    playerNameDisplay.textContent = '';
+    keys = { left: false, right: false, up: false, down: false };
+    isPaused = false;
+    pauseScreen.style.display = 'none';
+    currentLocation = 0;
+    lastLocationScore = 0;
+    initSides();
+    if (spawnInterval) clearInterval(spawnInterval);
+  }
+
+  function startGame() {
+    const name = nameInput.value.trim();
+    playerName = name || "Joueur";
+    playerNameDisplay.textContent = "Joueur: " + playerName;
+
+    if (!audioCtx) initAudio();
+    else if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    resumeEngineSound();
+    startScreen.style.display = 'none';
+    gameOverScreen.style.display = 'none';
+    isPaused = false;
+    pauseScreen.style.display = 'none';
+    gameRunning = true;
+    gameLoop();
+
+    spawnInterval = setInterval(() => {
+      if (gameRunning && !isPaused) createEnemy();
+    }, 1500);
+  }
+
+  startBtn.addEventListener('click', startGame);
+
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') startGame();
+  });
+
+  restartBtn.addEventListener('click', () => {
+    resetGameState();
+    stopEngineSound();
+    gameOverScreen.style.display = 'none';
+    startScreen.style.display = 'flex';
+    nameInput.value = '';
+    nameInput.focus();
+    displayHighScores(highscoresList);
+  });
+
+  player.style.top = playerY + 'px';
+  player.style.bottom = 'auto';
+
+  createLaneLines();
+  initSides();
+</script>
+</body>
+</html>
