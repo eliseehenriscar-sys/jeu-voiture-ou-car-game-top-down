@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Jour / Nuit</title>
+<title>Course 2D - Jour / Nuit réaliste</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -26,14 +26,34 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 40px rgba(0,0,0,0.9);
+    transition: background 2s ease;
   }
 
-  /* Overlay nuit */
+  /* Soleil (visible le jour) */
+  #sun {
+    position: absolute;
+    top: 30px;
+    right: 60px;
+    width: 55px;
+    height: 55px;
+    background: radial-gradient(circle, #fff9c4 0%, #ffeb3b 40%, #ff9800 70%, transparent 100%);
+    border-radius: 50%;
+    box-shadow: 
+      0 0 30px #ffeb3b,
+      0 0 60px #ff9800,
+      0 0 90px rgba(255, 152, 0, 0.5);
+    z-index: 7;
+    opacity: 1;
+    transition: opacity 2s ease;
+    pointer-events: none;
+  }
+
+  /* Overlay nuit (plus sombre) */
   #night-overlay {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(5, 10, 30, 0.55);
+    background: rgba(2, 5, 20, 0.72);
     z-index: 8;
     pointer-events: none;
     opacity: 0;
@@ -46,7 +66,7 @@
     width: 320px;
     height: 100%;
     background: #3a3a3a;
-    transition: background 1.5s ease;
+    transition: background 2s ease, filter 2s ease;
   }
 
   .bridge-rail {
@@ -75,6 +95,7 @@
     height: 45px;
     background: #fff;
     border-radius: 3px;
+    transition: opacity 1.5s ease;
   }
   .lane-line.left  { left: 103px; }
   .lane-line.right { left: 212px; }
@@ -85,7 +106,7 @@
     width: 50px;
     height: 100%;
     overflow: hidden;
-    transition: background 1.8s ease;
+    transition: background 1.8s ease, filter 2s ease;
   }
   .side.left  { left: 0; }
   .side.right { right: 0; }
@@ -202,8 +223,8 @@
     background: #ffffff;
     border-radius: 2px;
     box-shadow: 0 0 8px #fff, 0 0 16px #ffeaa7, 0 0 24px #ffd700;
-    opacity: 0; /* éteint par défaut (jour) */
-    transition: opacity 0.8s ease;
+    opacity: 0;
+    transition: opacity 1s ease;
   }
   .car .headlight.left  { left: 5px; }
   .car .headlight.right { right: 5px; }
@@ -214,8 +235,8 @@
     background: #ff3b3b;
     border-radius: 2px;
     box-shadow: 0 0 6px #ff3b3b, 0 0 12px #ff0000;
-    opacity: 0.4;
-    transition: opacity 0.8s ease;
+    opacity: 0.25;
+    transition: opacity 1s ease;
   }
   .car .taillight.left  { left: 5px; }
   .car .taillight.right { right: 5px; }
@@ -255,16 +276,16 @@
     transform: translateX(-50%);
     width: 70px; height: 60px;
     background: radial-gradient(ellipse at center bottom, 
-      rgba(255, 255, 220, 0.7) 0%, 
-      rgba(255, 240, 150, 0.35) 35%, 
-      rgba(255, 220, 100, 0.12) 60%, 
+      rgba(255, 255, 220, 0.75) 0%, 
+      rgba(255, 240, 150, 0.4) 35%, 
+      rgba(255, 220, 100, 0.15) 60%, 
       transparent 80%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
     filter: blur(2px);
-    opacity: 0; /* éteint le jour */
-    transition: opacity 0.8s ease;
+    opacity: 0;
+    transition: opacity 1s ease;
   }
 
   .truck {
@@ -301,7 +322,7 @@
     border-radius: 2px;
     box-shadow: 0 0 8px #fff, 0 0 16px #ffeaa7, 0 0 24px #ffd700;
     opacity: 0;
-    transition: opacity 0.8s ease;
+    transition: opacity 1s ease;
   }
   .truck .headlight.left  { left: 5px; }
   .truck .headlight.right { right: 5px; }
@@ -311,8 +332,8 @@
     background: #ff3b3b;
     border-radius: 2px;
     box-shadow: 0 0 6px #ff3b3b, 0 0 12px #ff0000;
-    opacity: 0.4;
-    transition: opacity 0.8s ease;
+    opacity: 0.25;
+    transition: opacity 1s ease;
   }
   .truck .taillight.left  { left: 5px; }
   .truck .taillight.right { right: 5px; }
@@ -342,23 +363,30 @@
     transform: translateX(-50%);
     width: 75px; height: 65px;
     background: radial-gradient(ellipse at center bottom, 
-      rgba(255, 255, 220, 0.65) 0%, 
-      rgba(255, 240, 150, 0.3) 40%, 
+      rgba(255, 255, 220, 0.7) 0%, 
+      rgba(255, 240, 150, 0.35) 40%, 
       transparent 75%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
     filter: blur(3px);
     opacity: 0;
-    transition: opacity 0.8s ease;
+    transition: opacity 1s ease;
   }
 
   .enemy { transform: rotate(180deg); }
 
-  /* Clignotement uniquement la nuit */
+  /* ===== NUIT : lumières allumées ===== */
+  .night-mode .headlight,
+  .night-mode .light-beam {
+    opacity: 1 !important;
+  }
+  .night-mode .taillight {
+    opacity: 1 !important;
+  }
+
   .night-mode .enemy .headlight {
     animation: blinkLights 0.65s infinite alternate;
-    opacity: 1 !important;
   }
   @keyframes blinkLights {
     0% {
@@ -373,13 +401,24 @@
     }
   }
 
-  /* Quand c'est la nuit → allumer les phares */
-  .night-mode .headlight,
-  .night-mode .light-beam {
-    opacity: 1 !important;
+  /* Route plus sombre la nuit */
+  .night-mode #road {
+    background: #1a1a1a !important;
+    filter: brightness(0.55);
   }
-  .night-mode .taillight {
-    opacity: 1 !important;
+  .night-mode .lane-line {
+    opacity: 0.55;
+  }
+  .night-mode .side {
+    filter: brightness(0.4);
+  }
+
+  /* Jour : route plus claire */
+  .day-mode #road {
+    filter: brightness(1.15);
+  }
+  .day-mode .side {
+    filter: brightness(1.1);
   }
 
   #player .body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
@@ -616,7 +655,7 @@
 </head>
 <body>
 
-<div id="game-container">
+<div id="game-container" class="day-mode">
   <div class="side left" id="side-left"></div>
   <div class="side right" id="side-right"></div>
 
@@ -625,7 +664,10 @@
 
   <div id="road"></div>
 
-  <!-- Overlay pour la nuit -->
+  <!-- Soleil -->
+  <div id="sun"></div>
+
+  <!-- Overlay nuit -->
   <div id="night-overlay"></div>
 
   <div id="player" class="car">
@@ -691,6 +733,7 @@
   const locationDisplay = document.getElementById('location-display');
   const timeDisplay = document.getElementById('time-display');
   const nightOverlay = document.getElementById('night-overlay');
+  const sun = document.getElementById('sun');
   const gameOverScreen = document.getElementById('game-over');
   const finalScore = document.getElementById('final-score');
   const restartBtn = document.getElementById('restart');
@@ -727,10 +770,9 @@
   let lastLocationScore = 0;
   let currentType = "forest";
 
-  // Jour / Nuit
   let isNight = false;
   let lastDayNightScore = 0;
-  const DAY_NIGHT_INTERVAL = 180; // change toutes les 180 points
+  const DAY_NIGHT_INTERVAL = 180;
 
   const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
   const truckColors = ['truck-red', 'truck-blue', 'truck-green', 'truck-yellow', 'truck-gray', 'truck-orange'];
@@ -750,13 +792,17 @@
   function setDayNight(night) {
     isNight = night;
     if (night) {
+      container.classList.remove('day-mode');
       container.classList.add('night-mode');
       nightOverlay.style.opacity = '1';
+      sun.style.opacity = '0';
       timeDisplay.textContent = '🌙 Nuit';
       timeDisplay.style.color = '#a0c4ff';
     } else {
       container.classList.remove('night-mode');
+      container.classList.add('day-mode');
       nightOverlay.style.opacity = '0';
+      sun.style.opacity = '1';
       timeDisplay.textContent = '☀️ Jour';
       timeDisplay.style.color = '#f1c40f';
     }
@@ -1174,13 +1220,11 @@
 
     speedDisplay.textContent = 'Vitesse: ' + speed.toFixed(1);
 
-    // Changement de paysage
     if (score - lastLocationScore >= 130) {
       lastLocationScore = score;
       changeLocation();
     }
 
-    // Jour / Nuit
     if (score - lastDayNightScore >= DAY_NIGHT_INTERVAL) {
       lastDayNightScore = score;
       setDayNight(!isNight);
@@ -1275,7 +1319,7 @@
     currentLocation = 0;
     lastLocationScore = 0;
     lastDayNightScore = 0;
-    setDayNight(false); // recommence en jour
+    setDayNight(false);
     initSides();
     if (spawnInterval) clearInterval(spawnInterval);
   }
@@ -1324,7 +1368,7 @@
 
   createLaneLines();
   initSides();
-  setDayNight(false); // commence en jour
+  setDayNight(false);
 </script>
 </body>
 </html>
