@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Ailerons fins & colorés</title>
+<title>Course 2D - Seulement ma voiture</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -148,90 +148,59 @@
     transform: rotate(25deg);
   }
 
-  /* ===== VOITURES DE COURSE ===== */
-  .car {
+  /* ===== TA VOITURE (spéciale) ===== */
+  #player.car {
     position: absolute;
     width: 40px;
     height: 80px;
     z-index: 10;
   }
 
-  .car .body {
+  #player .body {
     position: absolute;
     width: 40px;
     height: 66px;
     border-radius: 16px 16px 5px 5px;
+    background: linear-gradient(to bottom, #e74c3c, #c0392b);
     box-shadow: 0 3px 10px rgba(0,0,0,0.55);
   }
 
-  /* ===== AILERON PLUS FIN ===== */
-  .car .spoiler {
+  #player .spoiler {
     position: absolute;
     bottom: 0;
     left: 2px;
     width: 36px;
-    height: 4px;                 /* plus fin */
+    height: 4px;
+    background: #1a1a1a;
     border-radius: 1px;
     z-index: 4;
     box-shadow: 0 1px 3px rgba(0,0,0,0.5);
   }
-  /* Supports plus fins */
-  .car .spoiler::before,
-  .car .spoiler::after {
+  #player .spoiler::before,
+  #player .spoiler::after {
     content: '';
     position: absolute;
     bottom: 4px;
-    width: 3px;                  /* plus fin */
+    width: 3px;
     height: 8px;
+    background: #222;
     border-radius: 1px;
   }
-  .car .spoiler::before { left: 6px; }
-  .car .spoiler::after  { right: 6px; }
+  #player .spoiler::before { left: 6px; }
+  #player .spoiler::after  { right: 6px; }
 
-  .car .spoiler-top {
+  #player .spoiler-top {
     position: absolute;
     bottom: 11px;
     left: 4px;
     width: 32px;
-    height: 3px;                 /* plus fin */
+    height: 3px;
+    background: #111;
     border-radius: 1px;
     z-index: 5;
   }
 
-  /* Couleurs d'aileron différentes */
-  .spoiler-black  { background: #1a1a1a; }
-  .spoiler-black::before, .spoiler-black::after { background: #222; }
-  .spoiler-top.spoiler-black { background: #111; }
-
-  .spoiler-red    { background: #8b0000; }
-  .spoiler-red::before, .spoiler-red::after { background: #a52a2a; }
-  .spoiler-top.spoiler-red { background: #5c0000; }
-
-  .spoiler-blue   { background: #1a3a6a; }
-  .spoiler-blue::before, .spoiler-blue::after { background: #2a4a7a; }
-  .spoiler-top.spoiler-blue { background: #0f2a4a; }
-
-  .spoiler-silver { background: #a0a0a0; }
-  .spoiler-silver::before, .spoiler-silver::after { background: #888; }
-  .spoiler-top.spoiler-silver { background: #777; }
-
-  .spoiler-gold   { background: #b8860b; }
-  .spoiler-gold::before, .spoiler-gold::after { background: #daa520; }
-  .spoiler-top.spoiler-gold { background: #8b6914; }
-
-  .spoiler-green  { background: #1a5c2e; }
-  .spoiler-green::before, .spoiler-green::after { background: #2d8a3e; }
-  .spoiler-top.spoiler-green { background: #0f3d1e; }
-
-  .spoiler-purple { background: #4a1a6a; }
-  .spoiler-purple::before, .spoiler-purple::after { background: #6a2a8a; }
-  .spoiler-top.spoiler-purple { background: #2a0f4a; }
-
-  .spoiler-white  { background: #e0e0e0; }
-  .spoiler-white::before, .spoiler-white::after { background: #ccc; }
-  .spoiler-top.spoiler-white { background: #bbb; }
-
-  .car .cockpit {
+  #player .cockpit {
     position: absolute;
     top: 15px;
     left: 7px;
@@ -242,7 +211,7 @@
     border: 1px solid rgba(255,255,255,0.15);
   }
 
-  .car .windshield {
+  #player .windshield {
     position: absolute;
     top: 10px;
     left: 7px;
@@ -253,18 +222,18 @@
     border: 1px solid rgba(0,0,0,0.3);
   }
 
-  .car .stripe {
+  #player .stripe {
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 7px;
     height: 66px;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.9);
     border-radius: 2px;
   }
 
-  .car .number {
+  #player .number {
     position: absolute;
     top: 34px;
     left: 50%;
@@ -276,7 +245,7 @@
     z-index: 3;
   }
 
-  .car .headlight {
+  #player .headlight {
     position: absolute;
     top: 3px;
     width: 10px;
@@ -285,10 +254,10 @@
     border-radius: 2px;
     box-shadow: 0 0 6px #fff8dc, 0 0 12px #ffeaa7;
   }
-  .car .headlight.left  { left: 5px; }
-  .car .headlight.right { right: 5px; }
+  #player .headlight.left  { left: 5px; }
+  #player .headlight.right { right: 5px; }
 
-  .car .taillight {
+  #player .taillight {
     position: absolute;
     bottom: 16px;
     width: 10px;
@@ -297,10 +266,10 @@
     border-radius: 1px;
     box-shadow: 0 0 5px #ff2222;
   }
-  .car .taillight.left  { left: 5px; }
-  .car .taillight.right { right: 5px; }
+  #player .taillight.left  { left: 5px; }
+  #player .taillight.right { right: 5px; }
 
-  .car .wheel {
+  #player .wheel {
     position: absolute;
     width: 11px;
     height: 16px;
@@ -309,11 +278,11 @@
     border: 2px solid #555;
     z-index: 2;
   }
-  .car .wheel.front-left  { top: 8px; left: -5px; }
-  .car .wheel.front-right { top: 8px; right: -5px; }
-  .car .wheel.rear-left   { bottom: 18px; left: -5px; }
-  .car .wheel.rear-right  { bottom: 18px; right: -5px; }
-  .car .wheel::after {
+  #player .wheel.front-left  { top: 8px; left: -5px; }
+  #player .wheel.front-right { top: 8px; right: -5px; }
+  #player .wheel.rear-left   { bottom: 18px; left: -5px; }
+  #player .wheel.rear-right  { bottom: 18px; right: -5px; }
+  #player .wheel::after {
     content: '';
     position: absolute;
     top: 3px; left: 2px;
@@ -322,7 +291,7 @@
     border-radius: 1px;
   }
 
-  .car .light-beam {
+  #player .light-beam {
     position: absolute;
     top: -38px;
     left: 50%;
@@ -330,6 +299,103 @@
     width: 48px;
     height: 40px;
     background: radial-gradient(ellipse at center bottom, rgba(255,245,180,0.4) 0%, rgba(255,230,120,0.15) 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(3px);
+  }
+
+  /* ===== AUTRES VOITURES (simples) ===== */
+  .car {
+    position: absolute;
+    width: 40px;
+    height: 72px;
+    z-index: 10;
+  }
+
+  .car .body {
+    position: absolute;
+    width: 40px;
+    height: 64px;
+    border-radius: 12px 12px 6px 6px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+  }
+
+  .car .roof {
+    position: absolute;
+    top: 14px; left: 6px;
+    width: 28px; height: 24px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px 6px 4px 4px;
+  }
+
+  .car .windshield {
+    position: absolute;
+    top: 10px; left: 6px;
+    width: 28px; height: 14px;
+    background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
+    border-radius: 5px 5px 2px 2px;
+    border: 1px solid rgba(0,0,0,0.25);
+  }
+
+  .car .rear-window {
+    position: absolute;
+    top: 38px; left: 6px;
+    width: 28px; height: 10px;
+    background: linear-gradient(to bottom, #7ec8ff, #3a8de0);
+    border-radius: 2px 2px 4px 4px;
+    border: 1px solid rgba(0,0,0,0.25);
+  }
+
+  .car .headlight {
+    position: absolute;
+    top: 3px; width: 9px; height: 5px;
+    background: #fff8dc;
+    border-radius: 2px;
+    box-shadow: 0 0 5px #fff8dc;
+  }
+  .car .headlight.left  { left: 5px; }
+  .car .headlight.right { right: 5px; }
+
+  .car .taillight {
+    position: absolute;
+    bottom: 4px; width: 9px; height: 4px;
+    background: #ff3b3b;
+    border-radius: 2px;
+    box-shadow: 0 0 4px #ff3b3b;
+  }
+  .car .taillight.left  { left: 5px; }
+  .car .taillight.right { right: 5px; }
+
+  .car .wheel {
+    position: absolute;
+    width: 10px; height: 15px;
+    background: #111;
+    border-radius: 3px;
+    border: 2px solid #444;
+    z-index: 2;
+  }
+  .car .wheel.front-left  { top: 8px; left: -4px; }
+  .car .wheel.front-right { top: 8px; right: -4px; }
+  .car .wheel.rear-left   { bottom: 8px; left: -4px; }
+  .car .wheel.rear-right  { bottom: 8px; right: -4px; }
+  .car .wheel::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 2px;
+    width: 3px; height: 5px;
+    background: #999;
+    border-radius: 1px;
+  }
+
+  .car .light-beam {
+    position: absolute;
+    top: -36px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 46px;
+    height: 38px;
+    background: radial-gradient(ellipse at center bottom, rgba(255,245,180,0.35) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
@@ -419,17 +485,14 @@
 
   .enemy { transform: rotate(180deg); }
 
-  #player .body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
-  #player .stripe { background: rgba(255,255,255,0.9); }
-
-  .enemy.red .body     { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
-  .enemy.blue .body    { background: linear-gradient(to bottom, #2980b9, #1a5276); }
-  .enemy.yellow .body  { background: linear-gradient(to bottom, #f1c40f, #d4ac0d); }
-  .enemy.green .body   { background: linear-gradient(to bottom, #27ae60, #1e8449); }
+  .enemy.green .body   { background: linear-gradient(to bottom, #00b894, #00916e); }
+  .enemy.blue .body    { background: linear-gradient(to bottom, #0984e3, #0652dd); }
+  .enemy.yellow .body  { background: linear-gradient(to bottom, #f1c40f, #e67e22); }
+  .enemy.purple .body  { background: linear-gradient(to bottom, #a29bfe, #6c5ce7); }
   .enemy.orange .body  { background: linear-gradient(to bottom, #e67e22, #d35400); }
-  .enemy.purple .body  { background: linear-gradient(to bottom, #8e44ad, #6c3483); }
-  .enemy.cyan .body    { background: linear-gradient(to bottom, #1abc9c, #16a085); }
-  .enemy.white .body   { background: linear-gradient(to bottom, #ecf0f1, #bdc3c7); }
+  .enemy.pink .body    { background: linear-gradient(to bottom, #fd79a8, #e84393); }
+  .enemy.cyan .body    { background: linear-gradient(to bottom, #00cec9, #00b5b0); }
+  .enemy.white .body   { background: linear-gradient(to bottom, #dfe6e9, #b2bec3); }
 
   .enemy.truck-red .body    { background: linear-gradient(to bottom, #c0392b, #922b21); }
   .enemy.truck-blue .body   { background: linear-gradient(to bottom, #2980b9, #1a5276); }
@@ -614,12 +677,13 @@
 
   <div id="road"></div>
 
+  <!-- TA VOITURE (spéciale) -->
   <div id="player" class="car">
     <div class="light-beam"></div>
     <div class="body"></div>
     <div class="stripe"></div>
-    <div class="spoiler spoiler-black"></div>
-    <div class="spoiler-top spoiler-black"></div>
+    <div class="spoiler"></div>
+    <div class="spoiler-top"></div>
     <div class="cockpit"></div>
     <div class="windshield"></div>
     <div class="number">1</div>
@@ -710,10 +774,8 @@
   let lastLocationScore = 0;
   let currentType = "forest";
 
-  const carColors = ['red', 'blue', 'yellow', 'green', 'orange', 'purple', 'cyan', 'white'];
+  const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
   const truckColors = ['truck-red', 'truck-blue', 'truck-green', 'truck-yellow', 'truck-gray', 'truck-orange'];
-  const raceNumbers = [2, 3, 5, 7, 9, 11, 14, 18, 22, 27, 33, 44, 55, 69, 88, 99];
-  const spoilerColors = ['spoiler-black', 'spoiler-red', 'spoiler-blue', 'spoiler-silver', 'spoiler-gold', 'spoiler-green', 'spoiler-purple', 'spoiler-white'];
 
   const locations = [
     { name: "Forêt Alpine", type: "forest", bg: "#1e5c2e", road: "#3a3a3a" },
@@ -998,21 +1060,17 @@
         <div class="wheel rear-right"></div>
       `;
     } else {
+      // Voiture simple (sans aileron, sans numéro, sans bande)
       enemy.classList.add('car', 'enemy');
       const color = carColors[Math.floor(Math.random() * carColors.length)];
       enemy.classList.add(color);
-      const num = raceNumbers[Math.floor(Math.random() * raceNumbers.length)];
-      const spoilerColor = spoilerColors[Math.floor(Math.random() * spoilerColors.length)];
 
       enemy.innerHTML = `
         <div class="light-beam"></div>
         <div class="body"></div>
-        <div class="stripe"></div>
-        <div class="spoiler ${spoilerColor}"></div>
-        <div class="spoiler-top ${spoilerColor}"></div>
-        <div class="cockpit"></div>
+        <div class="roof"></div>
         <div class="windshield"></div>
-        <div class="number">${num}</div>
+        <div class="rear-window"></div>
         <div class="headlight left"></div>
         <div class="headlight right"></div>
         <div class="taillight left"></div>
@@ -1026,7 +1084,7 @@
 
     const positions = [80, 190, 300];
     enemy.style.left = positions[Math.floor(Math.random() * 3)] + 'px';
-    enemy.style.top = isTruck ? '-115px' : '-95px';
+    enemy.style.top = isTruck ? '-115px' : '-90px';
 
     container.appendChild(enemy);
     enemies.push(enemy);
