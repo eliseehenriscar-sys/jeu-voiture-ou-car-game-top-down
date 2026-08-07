@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - 4 voies bien placées</title>
+<title>Course 2D - 4 voies égales</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -30,8 +30,8 @@
 
   #road {
     position: absolute;
-    left: 45px;
-    width: 370px;
+    left: 50px;
+    width: 360px;
     height: 100%;
     background: #3a3a3a;
     transition: background 1.5s ease;
@@ -46,8 +46,8 @@
     display: none;
     z-index: 5;
   }
-  .bridge-rail.left  { left: 45px; }
-  .bridge-rail.right { left: 407px; }
+  .bridge-rail.left  { left: 50px; }
+  .bridge-rail.right { left: 402px; }
 
   .bridge-post {
     position: absolute;
@@ -68,7 +68,7 @@
   .side {
     position: absolute;
     top: 0;
-    width: 45px;
+    width: 50px;
     height: 100%;
     overflow: hidden;
     transition: background 1.8s ease;
@@ -180,10 +180,10 @@
   }
   .car .headlight {
     position: absolute;
-    top: 2px; width: 8px; height: 5px;
+    top: 2px; width: 9px; height: 6px;
     background: #fff8dc;
     border-radius: 2px;
-    box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
+    box-shadow: 0 0 6px #fff8dc, 0 0 12px #ffeaa7;
   }
   .car .headlight.left  { left: 4px; }
   .car .headlight.right { right: 4px; }
@@ -265,10 +265,10 @@
   }
   .truck .headlight {
     position: absolute;
-    top: 2px; width: 10px; height: 5px;
+    top: 2px; width: 11px; height: 6px;
     background: #fff8dc;
     border-radius: 2px;
-    box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
+    box-shadow: 0 0 6px #fff8dc, 0 0 12px #ffeaa7;
   }
   .truck .headlight.left  { left: 5px; }
   .truck .headlight.right { right: 5px; }
@@ -313,14 +313,28 @@
     filter: blur(4px);
   }
 
+  /* Voitures qui viennent vers toi (gauche) */
   .enemy.oncoming { transform: rotate(180deg); }
 
+  /* Clignotement PLUS PUISSANT et ÉCLATANT */
   .enemy.oncoming .headlight {
-    animation: blinkLights 0.7s infinite alternate;
+    animation: blinkLights 0.45s infinite alternate;
   }
   @keyframes blinkLights {
-    0%   { opacity: 1; box-shadow: 0 0 6px #fff8dc, 0 0 14px #ffeaa7; }
-    100% { opacity: 0.25; box-shadow: 0 0 2px #fff8dc; }
+    0% {
+      opacity: 1;
+      background: #ffffff;
+      box-shadow:
+        0 0 8px #fff,
+        0 0 18px #ffeaa7,
+        0 0 30px #ffd700,
+        0 0 45px rgba(255, 220, 100, 0.8);
+    }
+    100% {
+      opacity: 0.15;
+      background: #fff8dc;
+      box-shadow: 0 0 2px #fff8dc;
+    }
   }
 
   #player .body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
@@ -628,7 +642,7 @@
   const railLeft = document.getElementById('rail-left');
   const railRight = document.getElementById('rail-right');
 
-  let playerX = 163;
+  let playerX = 250;
   const playerY = 500;
   let score = 0;
   let speed = 4.5;
@@ -647,14 +661,16 @@
   let lastLocationScore = 0;
   let currentType = "forest";
 
-  // 4 voies bien centrées (route de 45 à 415)
-  // Voie largeur ≈ 92.5px → centre de chaque voie - moitié voiture (20px)
-  // GAUCHE = même sens | DROITE = viennent vers toi
+  // 4 voies ÉGALES (90px chacune)
+  // Route : left 50, width 360
+  // Voie 1 & 2 (GAUCHE) = viennent vers toi (oncoming)
+  // Voie 3 & 4 (DROITE) = même sens (same)
+  // Centre de chaque voie pour positionner les voitures (voiture 40px → left = centre - 20)
   const lanes = [
-    { x: 71,  type: 'same' },      // Voie 1 gauche - même sens
-    { x: 163, type: 'same' },      // Voie 2 gauche - même sens
-    { x: 255, type: 'oncoming' },  // Voie 3 droite - vient vers toi
-    { x: 347, type: 'oncoming' }   // Voie 4 droite - vient vers toi
+    { x: 75,  type: 'oncoming' },  // voie 1 gauche
+    { x: 165, type: 'oncoming' },  // voie 2 gauche
+    { x: 255, type: 'same' },      // voie 3 droite
+    { x: 345, type: 'same' }       // voie 4 droite
   ];
 
   const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
@@ -763,7 +779,7 @@
     for (let i = sideDecos.length - 1; i >= 0; i--) {
       const item = sideDecos[i];
       let top = parseFloat(item.el.style.top) || 0;
-      top += speed * 1.5;
+      top += speed * 1.2;
       item.el.style.top = top + 'px';
 
       if (top > 660) {
@@ -963,8 +979,9 @@
   }
 
   function createLaneLines() {
-    // Lignes entre les 4 voies (centres des séparations)
-    const linePositions = [137, 229, 321];
+    // 3 lignes entre les 4 voies égales (90px)
+    // Voies : 50-140 | 140-230 | 230-320 | 320-410
+    const linePositions = [140, 230, 320];
     linePositions.forEach(left => {
       for (let i = 0; i < 14; i++) {
         const line = document.createElement('div');
@@ -978,9 +995,10 @@
   }
 
   function moveEnvironment() {
+    // Lignes se déplacent en même temps que les voitures
     laneLines.forEach(line => {
       let top = parseFloat(line.style.top);
-      top += speed * 1.5;
+      top += speed * 1.2;
       if (top > 650) top = -50;
       line.style.top = top + 'px';
     });
@@ -1041,7 +1059,6 @@
       enemy.classList.add('oncoming');
     }
 
-    // Position exacte au centre de la voie
     enemy.style.left = lane.x + 'px';
     enemy.style.top = isTruck ? '-120px' : '-95px';
     enemy.dataset.type = lane.type;
@@ -1088,7 +1105,7 @@
 
     const moveSpeed = 5.5;
     if (keys.left && playerX > 55)  playerX -= moveSpeed;
-    if (keys.right && playerX < 370) playerX += moveSpeed;
+    if (keys.right && playerX < 365) playerX += moveSpeed;
     player.style.left = playerX + 'px';
 
     if (keys.up) {
@@ -1117,9 +1134,9 @@
       const type = enemy.dataset.type;
 
       if (type === 'same') {
-        top += speed * 0.45; // même sens → plus lent
+        top += speed * 0.5;
       } else {
-        top += speed;        // vient vers toi
+        top += speed;
       }
 
       enemy.style.top = top + 'px';
@@ -1156,6 +1173,7 @@
 
     stopEngineSound();
     playCrashSound();
+
     attachFireToPlayer();
 
     const enemyFire = document.createElement('div');
@@ -1164,9 +1182,10 @@
     enemyFire.style.top = '-8px';
     enemy.appendChild(enemyFire);
 
+    // Feu plus court : 1.2 seconde
     setTimeout(() => {
       endGame();
-    }, 2800);
+    }, 1200);
   }
 
   function endGame() {
@@ -1190,8 +1209,8 @@
 
     score = 0;
     speed = 4.5;
-    playerX = 163;
-    player.style.left = '163px';
+    playerX = 250;
+    player.style.left = '250px';
     scoreDisplay.textContent = 'Score: 0';
     speedDisplay.textContent = 'Vitesse: 4.5';
     playerNameDisplay.textContent = '';
