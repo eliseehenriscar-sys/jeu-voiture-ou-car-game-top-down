@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - 4 voies égales</title>
+<title>Course 2D - Voies corrigées</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -238,34 +238,34 @@
 
   .truck {
     position: absolute;
-    width: 46px;
-    height: 105px;
+    width: 44px;
+    height: 100px;
     z-index: 10;
   }
   .truck .body {
     position: absolute;
-    width: 46px; height: 97px;
+    width: 44px; height: 92px;
     border-radius: 6px 6px 5px 5px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
   }
   .truck .cabin {
     position: absolute;
     top: 5px; left: 4px;
-    width: 38px; height: 26px;
+    width: 36px; height: 24px;
     background: rgba(0,0,0,0.22);
     border-radius: 4px;
   }
   .truck .windshield {
     position: absolute;
-    top: 8px; left: 6px;
-    width: 34px; height: 16px;
+    top: 7px; left: 6px;
+    width: 32px; height: 15px;
     background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
     border-radius: 4px;
     border: 1px solid rgba(0,0,0,0.25);
   }
   .truck .headlight {
     position: absolute;
-    top: 2px; width: 11px; height: 6px;
+    top: 2px; width: 10px; height: 6px;
     background: #fff8dc;
     border-radius: 2px;
     box-shadow: 0 0 6px #fff8dc, 0 0 12px #ffeaa7;
@@ -283,16 +283,16 @@
   .truck .taillight.right { right: 5px; }
   .truck .wheel {
     position: absolute;
-    width: 10px; height: 17px;
+    width: 10px; height: 16px;
     background: #111;
     border-radius: 3px;
     border: 2px solid #444;
     z-index: 2;
   }
-  .truck .wheel.front-left  { top: 11px; left: -5px; }
-  .truck .wheel.front-right { top: 11px; right: -5px; }
-  .truck .wheel.rear-left   { bottom: 9px; left: -5px; }
-  .truck .wheel.rear-right  { bottom: 9px; right: -5px; }
+  .truck .wheel.front-left  { top: 10px; left: -5px; }
+  .truck .wheel.front-right { top: 10px; right: -5px; }
+  .truck .wheel.rear-left   { bottom: 8px; left: -5px; }
+  .truck .wheel.rear-right  { bottom: 8px; right: -5px; }
   .truck .wheel::after {
     content: '';
     position: absolute;
@@ -303,9 +303,9 @@
   }
   .truck .light-beam {
     position: absolute;
-    top: -45px; left: 50%;
+    top: -42px; left: 50%;
     transform: translateX(-50%);
-    width: 56px; height: 46px;
+    width: 52px; height: 42px;
     background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.45) 0%, rgba(255, 230, 120, 0.18) 40%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
@@ -313,10 +313,8 @@
     filter: blur(4px);
   }
 
-  /* Voitures qui viennent vers toi (gauche) */
   .enemy.oncoming { transform: rotate(180deg); }
 
-  /* Clignotement PLUS PUISSANT et ÉCLATANT */
   .enemy.oncoming .headlight {
     animation: blinkLights 0.45s infinite alternate;
   }
@@ -642,7 +640,7 @@
   const railLeft = document.getElementById('rail-left');
   const railRight = document.getElementById('rail-right');
 
-  let playerX = 250;
+  let playerX = 255;
   const playerY = 500;
   let score = 0;
   let speed = 4.5;
@@ -661,16 +659,18 @@
   let lastLocationScore = 0;
   let currentType = "forest";
 
-  // 4 voies ÉGALES (90px chacune)
-  // Route : left 50, width 360
-  // Voie 1 & 2 (GAUCHE) = viennent vers toi (oncoming)
-  // Voie 3 & 4 (DROITE) = même sens (same)
-  // Centre de chaque voie pour positionner les voitures (voiture 40px → left = centre - 20)
+  /*
+    Route : left 50, width 360 → 4 voies de 90px
+    Limites : 50 | 140 | 230 | 320 | 410
+    Centres des voies : 95, 185, 275, 365
+    Voiture 40px → left = centre - 20
+    → 75, 165, 255, 345  (bien ENTRE les lignes)
+  */
   const lanes = [
-    { x: 75,  type: 'oncoming' },  // voie 1 gauche
-    { x: 165, type: 'oncoming' },  // voie 2 gauche
-    { x: 255, type: 'same' },      // voie 3 droite
-    { x: 345, type: 'same' }       // voie 4 droite
+    { x: 75,  type: 'oncoming' }, // voie 1 : vient vers toi
+    { x: 165, type: 'same' },     // voie 2 : descend (même sens)
+    { x: 255, type: 'oncoming' }, // voie 3 : vient vers toi
+    { x: 345, type: 'same' }      // voie 4 : descend (même sens)
   ];
 
   const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
@@ -979,7 +979,7 @@
   }
 
   function createLaneLines() {
-    // 3 lignes entre les 4 voies égales (90px)
+    // Lignes ENTRE les voies (pas sur les voitures)
     // Voies : 50-140 | 140-230 | 230-320 | 320-410
     const linePositions = [140, 230, 320];
     linePositions.forEach(left => {
@@ -995,7 +995,6 @@
   }
 
   function moveEnvironment() {
-    // Lignes se déplacent en même temps que les voitures
     laneLines.forEach(line => {
       let top = parseFloat(line.style.top);
       top += speed * 1.2;
@@ -1031,6 +1030,8 @@
         <div class="wheel rear-left"></div>
         <div class="wheel rear-right"></div>
       `;
+      // Camion centré dans la voie (44px → centre - 22)
+      enemy.style.left = (lane.x + 20 - 22) + 'px';
     } else {
       enemy.classList.add('car', 'enemy');
       const color = carColors[Math.floor(Math.random() * carColors.length)];
@@ -1053,14 +1054,15 @@
         <div class="wheel rear-left"></div>
         <div class="wheel rear-right"></div>
       `;
+      // Voiture 40px déjà centrée avec lane.x
+      enemy.style.left = lane.x + 'px';
     }
 
     if (isOncoming) {
       enemy.classList.add('oncoming');
     }
 
-    enemy.style.left = lane.x + 'px';
-    enemy.style.top = isTruck ? '-120px' : '-95px';
+    enemy.style.top = isTruck ? '-115px' : '-95px';
     enemy.dataset.type = lane.type;
 
     container.appendChild(enemy);
@@ -1182,7 +1184,6 @@
     enemyFire.style.top = '-8px';
     enemy.appendChild(enemyFire);
 
-    // Feu plus court : 1.2 seconde
     setTimeout(() => {
       endGame();
     }, 1200);
@@ -1209,8 +1210,8 @@
 
     score = 0;
     speed = 4.5;
-    playerX = 250;
-    player.style.left = '250px';
+    playerX = 255;
+    player.style.left = '255px';
     scoreDisplay.textContent = 'Score: 0';
     speedDisplay.textContent = 'Vitesse: 4.5';
     playerNameDisplay.textContent = '';
