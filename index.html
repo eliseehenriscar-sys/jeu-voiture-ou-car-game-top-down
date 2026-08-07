@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Klaxon + Explosion</title>
+<title>Course 2D - Klaxon + Crash + Feu</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -148,186 +148,53 @@
     transform: rotate(25deg);
   }
 
-  /* ===== TA VOITURE ===== */
-  #player.car {
+  /* ===== VOITURES ===== */
+  .car {
     position: absolute;
-    width: 40px;
+    width: 42px;
     height: 80px;
     z-index: 10;
   }
-
-  #player .body {
-    position: absolute;
-    width: 40px;
-    height: 66px;
-    border-radius: 16px 16px 5px 5px;
-    background: linear-gradient(to bottom, #e74c3c, #c0392b);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.55);
-  }
-
-  #player .spoiler {
-    position: absolute;
-    bottom: 0; left: 2px;
-    width: 36px; height: 4px;
-    background: #1a1a1a;
-    border-radius: 1px;
-    z-index: 4;
-  }
-  #player .spoiler::before,
-  #player .spoiler::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    width: 3px; height: 8px;
-    background: #222;
-  }
-  #player .spoiler::before { left: 6px; }
-  #player .spoiler::after  { right: 6px; }
-
-  #player .spoiler-top {
-    position: absolute;
-    bottom: 11px; left: 4px;
-    width: 32px; height: 3px;
-    background: #111;
-    border-radius: 1px;
-    z-index: 5;
-  }
-
-  #player .cockpit {
-    position: absolute;
-    top: 15px; left: 7px;
-    width: 26px; height: 19px;
-    background: rgba(0,0,0,0.45);
-    border-radius: 6px;
-  }
-
-  #player .windshield {
-    position: absolute;
-    top: 10px; left: 7px;
-    width: 26px; height: 12px;
-    background: linear-gradient(to bottom, #8ec8ff, #3a8de0);
-    border-radius: 7px 7px 2px 2px;
-  }
-
-  #player .stripe {
-    position: absolute;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 7px; height: 66px;
-    background: rgba(255,255,255,0.9);
-  }
-
-  #player .number {
-    position: absolute;
-    top: 34px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 11px; font-weight: bold;
-    color: #fff;
-    text-shadow: 0 0 3px #000;
-    z-index: 3;
-  }
-
-  #player .headlight {
-    position: absolute;
-    top: 3px; width: 10px; height: 5px;
-    background: #fff8dc;
-    border-radius: 2px;
-    box-shadow: 0 0 6px #fff8dc, 0 0 12px #ffeaa7;
-  }
-  #player .headlight.left  { left: 5px; }
-  #player .headlight.right { right: 5px; }
-
-  #player .taillight {
-    position: absolute;
-    bottom: 16px; width: 10px; height: 4px;
-    background: #ff2222;
-    border-radius: 1px;
-    box-shadow: 0 0 5px #ff2222;
-  }
-  #player .taillight.left  { left: 5px; }
-  #player .taillight.right { right: 5px; }
-
-  #player .wheel {
-    position: absolute;
-    width: 11px; height: 16px;
-    background: #111;
-    border-radius: 3px;
-    border: 2px solid #555;
-    z-index: 2;
-  }
-  #player .wheel.front-left  { top: 8px; left: -5px; }
-  #player .wheel.front-right { top: 8px; right: -5px; }
-  #player .wheel.rear-left   { bottom: 18px; left: -5px; }
-  #player .wheel.rear-right  { bottom: 18px; right: -5px; }
-
-  #player .light-beam {
-    position: absolute;
-    top: -38px; left: 50%;
-    transform: translateX(-50%);
-    width: 48px; height: 40px;
-    background: radial-gradient(ellipse at center bottom, rgba(255,245,180,0.4) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 1;
-    filter: blur(3px);
-  }
-
-  /* ===== AUTRES VOITURES ===== */
-  .car {
-    position: absolute;
-    width: 40px;
-    height: 72px;
-    z-index: 10;
-  }
-
   .car .body {
     position: absolute;
-    width: 40px;
-    height: 64px;
-    border-radius: 12px 12px 6px 6px;
+    width: 42px;
+    height: 72px;
+    border-radius: 12px 12px 7px 7px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
   }
-
   .car .roof {
     position: absolute;
-    top: 14px; left: 6px;
-    width: 28px; height: 24px;
+    top: 15px; left: 5px;
+    width: 32px; height: 28px;
     background: rgba(0,0,0,0.2);
-    border-radius: 6px;
+    border-radius: 7px 7px 4px 4px;
   }
-
   .car .windshield {
     position: absolute;
-    top: 10px; left: 6px;
-    width: 28px; height: 14px;
+    top: 11px; left: 6px;
+    width: 30px; height: 15px;
     background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
-    border-radius: 5px;
+    border-radius: 5px 5px 2px 2px;
+    border: 1px solid rgba(0,0,0,0.25);
   }
-
   .car .rear-window {
     position: absolute;
-    top: 38px; left: 6px;
-    width: 28px; height: 10px;
+    top: 42px; left: 6px;
+    width: 30px; height: 11px;
     background: linear-gradient(to bottom, #7ec8ff, #3a8de0);
     border-radius: 2px 2px 4px 4px;
+    border: 1px solid rgba(0,0,0,0.25);
   }
-
   .car .headlight {
     position: absolute;
     top: 3px; width: 9px; height: 5px;
     background: #fff8dc;
     border-radius: 2px;
-    box-shadow: 0 0 5px #fff8dc;
-    transition: opacity 0.1s;
+    box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
+    transition: opacity 0.08s;
   }
   .car .headlight.left  { left: 5px; }
   .car .headlight.right { right: 5px; }
-
-  .car .headlight.blink {
-    opacity: 0.15 !important;
-    box-shadow: none !important;
-  }
-
   .car .taillight {
     position: absolute;
     bottom: 4px; width: 9px; height: 4px;
@@ -337,26 +204,42 @@
   }
   .car .taillight.left  { left: 5px; }
   .car .taillight.right { right: 5px; }
-
+  .car .mirror {
+    position: absolute;
+    top: 18px; width: 5px; height: 3px;
+    background: #222;
+    border-radius: 1px;
+  }
+  .car .mirror.left  { left: -4px; }
+  .car .mirror.right { right: -4px; }
   .car .wheel {
     position: absolute;
-    width: 10px; height: 15px;
+    width: 10px; height: 16px;
     background: #111;
     border-radius: 3px;
     border: 2px solid #444;
     z-index: 2;
   }
-  .car .wheel.front-left  { top: 8px; left: -4px; }
-  .car .wheel.front-right { top: 8px; right: -4px; }
-  .car .wheel.rear-left   { bottom: 8px; left: -4px; }
-  .car .wheel.rear-right  { bottom: 8px; right: -4px; }
-
+  .car .wheel.front-left  { top: 10px; left: -4px; }
+  .car .wheel.front-right { top: 10px; right: -4px; }
+  .car .wheel.rear-left   { bottom: 10px; left: -4px; }
+  .car .wheel.rear-right  { bottom: 10px; right: -4px; }
+  .car .wheel::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 2px;
+    width: 3px; height: 6px;
+    background: #999;
+    border-radius: 1px;
+  }
   .car .light-beam {
     position: absolute;
-    top: -36px; left: 50%;
+    top: -42px;
+    left: 50%;
     transform: translateX(-50%);
-    width: 46px; height: 38px;
-    background: radial-gradient(ellipse at center bottom, rgba(255,245,180,0.35) 0%, transparent 70%);
+    width: 52px;
+    height: 44px;
+    background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.4) 0%, rgba(255, 230, 120, 0.15) 40%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
@@ -365,76 +248,97 @@
 
   .truck {
     position: absolute;
-    width: 46px;
-    height: 105px;
+    width: 48px;
+    height: 110px;
     z-index: 10;
   }
   .truck .body {
     position: absolute;
-    width: 46px;
-    height: 97px;
-    border-radius: 6px;
+    width: 48px;
+    height: 102px;
+    border-radius: 6px 6px 5px 5px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
   }
   .truck .cabin {
     position: absolute;
     top: 5px; left: 4px;
-    width: 38px; height: 26px;
-    background: rgba(0,0,0,0.25);
+    width: 40px; height: 28px;
+    background: rgba(0,0,0,0.22);
     border-radius: 4px;
   }
   .truck .windshield {
     position: absolute;
-    top: 8px; left: 6px;
-    width: 34px; height: 16px;
+    top: 8px; left: 7px;
+    width: 34px; height: 18px;
     background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
     border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.25);
   }
   .truck .headlight {
     position: absolute;
-    top: 3px; width: 10px; height: 5px;
+    top: 3px; width: 11px; height: 6px;
     background: #fff8dc;
     border-radius: 2px;
-    box-shadow: 0 0 5px #fff8dc;
-    transition: opacity 0.1s;
+    box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
+    transition: opacity 0.08s;
   }
   .truck .headlight.left  { left: 5px; }
   .truck .headlight.right { right: 5px; }
-  .truck .headlight.blink {
-    opacity: 0.15 !important;
-    box-shadow: none !important;
-  }
   .truck .taillight {
     position: absolute;
-    bottom: 4px; width: 10px; height: 5px;
+    bottom: 4px; width: 11px; height: 5px;
     background: #ff3b3b;
     border-radius: 2px;
+    box-shadow: 0 0 4px #ff3b3b;
   }
   .truck .taillight.left  { left: 5px; }
   .truck .taillight.right { right: 5px; }
   .truck .wheel {
     position: absolute;
-    width: 11px; height: 17px;
+    width: 11px; height: 18px;
     background: #111;
     border-radius: 3px;
     border: 2px solid #444;
+    z-index: 2;
   }
-  .truck .wheel.front-left  { top: 11px; left: -5px; }
-  .truck .wheel.front-right { top: 11px; right: -5px; }
+  .truck .wheel.front-left  { top: 12px; left: -5px; }
+  .truck .wheel.front-right { top: 12px; right: -5px; }
   .truck .wheel.rear-left   { bottom: 10px; left: -5px; }
   .truck .wheel.rear-right  { bottom: 10px; right: -5px; }
+  .truck .wheel::after {
+    content: '';
+    position: absolute;
+    top: 4px; left: 2px;
+    width: 4px; height: 7px;
+    background: #999;
+    border-radius: 1px;
+  }
   .truck .light-beam {
     position: absolute;
-    top: -45px; left: 50%;
+    top: -48px;
+    left: 50%;
     transform: translateX(-50%);
-    width: 55px; height: 48px;
-    background: radial-gradient(ellipse at center bottom, rgba(255,245,180,0.4) 0%, transparent 70%);
+    width: 60px;
+    height: 50px;
+    background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.45) 0%, rgba(255, 230, 120, 0.18) 40%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
-    filter: blur(3px);
+    z-index: 1;
+    filter: blur(4px);
   }
 
   .enemy { transform: rotate(180deg); }
+
+  /* Clignotement des phares */
+  .blink .headlight {
+    animation: blinkHeadlight 0.18s infinite alternate;
+  }
+  @keyframes blinkHeadlight {
+    from { opacity: 1; box-shadow: 0 0 8px #fff8dc, 0 0 16px #ffeaa7; }
+    to   { opacity: 0.15; box-shadow: none; }
+  }
+
+  #player .body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
 
   .enemy.green .body   { background: linear-gradient(to bottom, #00b894, #00916e); }
   .enemy.blue .body    { background: linear-gradient(to bottom, #0984e3, #0652dd); }
@@ -452,38 +356,38 @@
   .enemy.truck-gray .body   { background: linear-gradient(to bottom, #7f8c8d, #5d6d7e); }
   .enemy.truck-orange .body { background: linear-gradient(to bottom, #e67e22, #ca6f1e); }
 
-  /* ===== EXPLOSION + FEU ===== */
+  /* ===== EXPLOSION / FEU ===== */
   .explosion {
     position: absolute;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    background: radial-gradient(circle, #fff 0%, #ff0 20%, #f80 40%, #f00 70%, transparent 100%);
-    z-index: 30;
+    background: radial-gradient(circle, #fff 0%, #ffeb3b 15%, #ff9800 35%, #f44336 60%, transparent 80%);
+    box-shadow: 0 0 30px #ff5722, 0 0 60px #ff9800;
+    z-index: 50;
     pointer-events: none;
-    animation: explode 0.7s ease-out forwards;
+    animation: explode 0.7s forwards;
   }
-
   @keyframes explode {
     0%   { transform: scale(0.3); opacity: 1; }
-    50%  { transform: scale(1.4); opacity: 0.9; }
+    40%  { transform: scale(1.4); opacity: 1; }
     100% { transform: scale(2.2); opacity: 0; }
   }
 
   .fire-particle {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    background: #ff6600;
-    z-index: 31;
+    background: #ff5722;
+    box-shadow: 0 0 8px #ff9800;
+    z-index: 49;
     pointer-events: none;
-    animation: fireUp 0.8s ease-out forwards;
+    animation: fireUp 0.8s forwards;
   }
-
   @keyframes fireUp {
     0%   { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-40px) scale(0.2); opacity: 0; }
+    100% { transform: translateY(-60px) scale(0.2); opacity: 0; }
   }
 
   #score {
@@ -597,6 +501,7 @@
     padding: 8px 20px;
     margin-top: 12px;
   }
+  #clear-all-btn:hover { background: #95a5a6; }
 
   #highscores {
     margin-top: 20px;
@@ -633,7 +538,9 @@
     align-items: center;
     justify-content: center;
     margin-left: 10px;
+    flex-shrink: 0;
   }
+  .delete-btn:hover { background: #c0392b; }
 
   #final-score {
     font-size: 24px;
@@ -662,16 +569,15 @@
   <div id="player" class="car">
     <div class="light-beam"></div>
     <div class="body"></div>
-    <div class="stripe"></div>
-    <div class="spoiler"></div>
-    <div class="spoiler-top"></div>
-    <div class="cockpit"></div>
+    <div class="roof"></div>
     <div class="windshield"></div>
-    <div class="number">1</div>
+    <div class="rear-window"></div>
     <div class="headlight left"></div>
     <div class="headlight right"></div>
     <div class="taillight left"></div>
     <div class="taillight right"></div>
+    <div class="mirror left"></div>
+    <div class="mirror right"></div>
     <div class="wheel front-left"></div>
     <div class="wheel front-right"></div>
     <div class="wheel rear-left"></div>
@@ -693,6 +599,7 @@
     <h1>Course 2D</h1>
     <input type="text" id="name-input" placeholder="Entre ton nom..." maxlength="12" autocomplete="off">
     <button id="start-btn">Jouer</button>
+
     <div id="highscores">
       <h3>Meilleurs Scores</h3>
       <div id="highscores-list">Aucun score pour le moment</div>
@@ -736,7 +643,7 @@
   const railLeft = document.getElementById('rail-left');
   const railRight = document.getElementById('rail-right');
 
-  let playerX = 190;
+  let playerX = 189;
   const playerY = 500;
   let score = 0;
   let speed = 4.5;
@@ -819,53 +726,6 @@
     noiseNode.start();
   }
 
-  function playHorn() {
-    if (!audioCtx) return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(420, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(280, audioCtx.currentTime + 0.25);
-    gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.3);
-  }
-
-  function playCrash() {
-    if (!audioCtx) return;
-    // Boom
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(120, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.4);
-    gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.5);
-
-    // Noise impact
-    const bufferSize = audioCtx.sampleRate * 0.4;
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 2);
-    }
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = buffer;
-    const nGain = audioCtx.createGain();
-    nGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-    nGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-    noise.connect(nGain);
-    nGain.connect(audioCtx.destination);
-    noise.start();
-  }
-
   function updateEngineSound() {
     if (!audioCtx || !engineOsc) return;
     const baseFreq = 90 + (speed * 10);
@@ -883,27 +743,111 @@
     if (noiseGain) noiseGain.gain.setTargetAtTime(0.028, audioCtx.currentTime, 0.1);
   }
 
-  // ===== EXPLOSION =====
+  // Klaxon "pom-pom" / "ki-ki"
+  function playHorn() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // Premier bip
+    const osc1 = audioCtx.createOscillator();
+    const g1 = audioCtx.createGain();
+    osc1.type = 'square';
+    osc1.frequency.value = 420;
+    g1.gain.setValueAtTime(0.18, now);
+    g1.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+    osc1.connect(g1);
+    g1.connect(audioCtx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.13);
+
+    // Deuxième bip (pom-pom)
+    const osc2 = audioCtx.createOscillator();
+    const g2 = audioCtx.createGain();
+    osc2.type = 'square';
+    osc2.frequency.value = 380;
+    g2.gain.setValueAtTime(0.16, now + 0.15);
+    g2.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+    osc2.connect(g2);
+    g2.connect(audioCtx.destination);
+    osc2.start(now + 0.15);
+    osc2.stop(now + 0.29);
+  }
+
+  // Son de crash + explosion
+  function playCrash() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // Bruit d'impact (noise)
+    const bufferSize = audioCtx.sampleRate * 0.4;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 1.5);
+    }
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.value = 900;
+
+    const noiseGain = audioCtx.createGain();
+    noiseGain.gain.setValueAtTime(0.45, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+    noise.start(now);
+
+    // Boom grave
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(120, now);
+    osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+    g.gain.setValueAtTime(0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+    osc.connect(g);
+    g.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.42);
+
+    // "Éclate" aigu
+    const osc2 = audioCtx.createOscillator();
+    const g2 = audioCtx.createGain();
+    osc2.type = 'sawtooth';
+    osc2.frequency.setValueAtTime(600, now);
+    osc2.frequency.exponentialRampToValueAtTime(80, now + 0.25);
+    g2.gain.setValueAtTime(0.25, now);
+    g2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc2.connect(g2);
+    g2.connect(audioCtx.destination);
+    osc2.start(now);
+    osc2.stop(now + 0.32);
+  }
+
+  // Explosion visuelle + feu
   function createExplosion(x, y) {
     const exp = document.createElement('div');
     exp.className = 'explosion';
-    exp.style.left = (x - 30) + 'px';
-    exp.style.top = (y - 30) + 'px';
+    exp.style.left = (x - 35) + 'px';
+    exp.style.top = (y - 35) + 'px';
     container.appendChild(exp);
 
     // Particules de feu
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 8; i++) {
       const p = document.createElement('div');
       p.className = 'fire-particle';
       p.style.left = (x + (Math.random() - 0.5) * 40) + 'px';
       p.style.top = (y + (Math.random() - 0.5) * 20) + 'px';
-      p.style.background = ['#ff0', '#f80', '#f40', '#ff6600'][Math.floor(Math.random() * 4)];
-      p.style.animationDelay = (Math.random() * 0.15) + 's';
+      p.style.background = ['#ff5722', '#ff9800', '#ffeb3b', '#f44336'][Math.floor(Math.random() * 4)];
       container.appendChild(p);
-      setTimeout(() => p.remove(), 900);
+      setTimeout(() => p.remove(), 850);
     }
 
-    setTimeout(() => exp.remove(), 700);
+    setTimeout(() => exp.remove(), 750);
   }
 
   // ===== DÉCORS =====
@@ -944,11 +888,13 @@
         const postL = document.createElement('div');
         postL.className = 'bridge-post';
         postL.style.top = (i * 55) + 'px';
+        postL.style.left = '-1px';
         railLeft.appendChild(postL);
 
         const postR = document.createElement('div');
         postR.className = 'bridge-post';
         postR.style.top = (i * 55) + 'px';
+        postR.style.left = '-1px';
         railRight.appendChild(postR);
       }
     } else {
@@ -981,11 +927,14 @@
   function changeLocation() {
     currentLocation = (currentLocation + 1) % locations.length;
     const loc = locations[currentLocation];
+
     currentType = loc.type;
     locationDisplay.textContent = loc.name;
+
     sideLeft.style.background = loc.bg;
     sideRight.style.background = loc.bg;
     road.style.background = loc.road;
+
     setBridge(loc.type === "sea");
   }
 
@@ -995,6 +944,7 @@
       let top = parseFloat(item.el.style.top) || 0;
       top += speed * 1.5;
       item.el.style.top = top + 'px';
+
       if (top > 660) {
         item.el.remove();
         sideDecos.splice(i, 1);
@@ -1011,7 +961,7 @@
 
   function saveHighScore(name, scoreValue) {
     let scores = getHighScores();
-    scores.push({ name, score: scoreValue });
+    scores.push({ name: name, score: scoreValue });
     scores.sort((a, b) => b.score - a.score);
     scores = scores.slice(0, 5);
     localStorage.setItem('course2d_scores', JSON.stringify(scores));
@@ -1044,7 +994,7 @@
         <span>${i+1}. ${s.name}</span>
         <div style="display:flex;align-items:center;">
           <span>${s.score}</span>
-          <button class="delete-btn" onclick="deleteScore(${i})">×</button>
+          <button class="delete-btn" onclick="deleteScore(${i})" title="Effacer">×</button>
         </div>
       </div>`
     ).join('');
@@ -1052,6 +1002,7 @@
 
   window.deleteScore = deleteScore;
   displayHighScores(highscoresList);
+
   clearAllBtn.addEventListener('click', clearAllScores);
   clearAllBtnEnd.addEventListener('click', clearAllScores);
 
@@ -1082,14 +1033,14 @@
   }
 
   function createEnemy() {
-    const isTruck = Math.random() < 0.22;
+    const isTruck = Math.random() < 0.28;
     const enemy = document.createElement('div');
-    enemy.dataset.honked = 'false';
-    enemy.dataset.blinkState = '0';
 
     if (isTruck) {
       enemy.classList.add('truck', 'enemy');
-      enemy.classList.add(truckColors[Math.floor(Math.random() * truckColors.length)]);
+      const color = truckColors[Math.floor(Math.random() * truckColors.length)];
+      enemy.classList.add(color);
+
       enemy.innerHTML = `
         <div class="light-beam"></div>
         <div class="body"></div>
@@ -1106,7 +1057,9 @@
       `;
     } else {
       enemy.classList.add('car', 'enemy');
-      enemy.classList.add(carColors[Math.floor(Math.random() * carColors.length)]);
+      const color = carColors[Math.floor(Math.random() * carColors.length)];
+      enemy.classList.add(color);
+
       enemy.innerHTML = `
         <div class="light-beam"></div>
         <div class="body"></div>
@@ -1117,6 +1070,8 @@
         <div class="headlight right"></div>
         <div class="taillight left"></div>
         <div class="taillight right"></div>
+        <div class="mirror left"></div>
+        <div class="mirror right"></div>
         <div class="wheel front-left"></div>
         <div class="wheel front-right"></div>
         <div class="wheel rear-left"></div>
@@ -1124,9 +1079,14 @@
       `;
     }
 
-    const positions = [80, 190, 300];
+    const positions = [78, 189, 300];
     enemy.style.left = positions[Math.floor(Math.random() * 3)] + 'px';
-    enemy.style.top = isTruck ? '-115px' : '-90px';
+    enemy.style.top = isTruck ? '-120px' : '-95px';
+
+    // Propriétés pour klaxon
+    enemy.dataset.honked = 'false';
+    enemy.dataset.lastHorn = '0';
+
     container.appendChild(enemy);
     enemies.push(enemy);
   }
@@ -1136,6 +1096,7 @@
     if (e.key === 'ArrowRight') keys.right = true;
     if (e.key === 'ArrowUp')    keys.up = true;
     if (e.key === 'ArrowDown')  keys.down = true;
+
     if (e.code === 'Space' && gameRunning) {
       e.preventDefault();
       togglePause();
@@ -1163,10 +1124,11 @@
   function gameLoop() {
     if (!gameRunning) return;
     requestAnimationFrame(gameLoop);
+
     if (isPaused) return;
 
     const moveSpeed = 5.5;
-    if (keys.left && playerX > 60)  playerX -= moveSpeed;
+    if (keys.left && playerX > 58)  playerX -= moveSpeed;
     if (keys.right && playerX < 320) playerX += moveSpeed;
     player.style.left = playerX + 'px';
 
@@ -1191,44 +1153,37 @@
     moveEnvironment();
     updateEngineSound();
 
+    const now = Date.now();
+
     enemies.forEach((enemy, index) => {
       let top = parseFloat(enemy.style.top) || 0;
       top += speed;
       enemy.style.top = top + 'px';
 
-      // Klaxon + clignotement quand la voiture approche
-      if (top > 180 && top < 420) {
-        // Clignotement des phares
-        const lights = enemy.querySelectorAll('.headlight');
-        const blink = Math.floor(Date.now() / 180) % 2 === 0;
-        lights.forEach(l => {
-          if (blink) l.classList.add('blink');
-          else l.classList.remove('blink');
-        });
+      // Quand la voiture approche → klaxon + clignotement
+      if (top > 180 && top < 480) {
+        enemy.classList.add('blink');
 
-        // Klaxon une seule fois
-        if (enemy.dataset.honked === 'false') {
+        // Klaxon périodique (pom-pom)
+        const lastHorn = parseInt(enemy.dataset.lastHorn) || 0;
+        if (now - lastHorn > 900) {
           playHorn();
-          enemy.dataset.honked = 'true';
+          enemy.dataset.lastHorn = now;
         }
       } else {
-        enemy.querySelectorAll('.headlight').forEach(l => l.classList.remove('blink'));
+        enemy.classList.remove('blink');
       }
 
       if (checkCollision(player, enemy)) {
-        // Explosion + feu
-        const rect = enemy.getBoundingClientRect();
+        // Position de l'explosion
+        const playerRect = player.getBoundingClientRect();
         const contRect = container.getBoundingClientRect();
-        const x = rect.left - contRect.left + rect.width / 2;
-        const y = rect.top - contRect.top + rect.height / 2;
+        const expX = playerRect.left - contRect.left + playerRect.width / 2;
+        const expY = playerRect.top - contRect.top + playerRect.height / 2;
 
         playCrash();
-        createExplosion(x, y);
-        enemy.remove();
-        enemies.splice(index, 1);
-
+        createExplosion(expX, expY);
         endGame();
-        return;
       }
 
       if (top > 700) {
@@ -1244,10 +1199,10 @@
     const aRect = a.getBoundingClientRect();
     const bRect = b.getBoundingClientRect();
     return !(
-      aRect.bottom - 14 < bRect.top ||
+      aRect.bottom - 15 < bRect.top ||
       aRect.top + 10 > bRect.bottom ||
-      aRect.right - 7 < bRect.left ||
-      aRect.left + 7 > bRect.right
+      aRect.right - 8 < bRect.left ||
+      aRect.left + 8 > bRect.right
     );
   }
 
@@ -1257,9 +1212,11 @@
     pauseScreen.style.display = 'none';
     stopEngineSound();
     finalScore.textContent = 'Score: ' + score;
+
     saveHighScore(playerName, score);
     displayHighScores(highscoresListEnd);
     displayHighScores(highscoresList);
+
     gameOverScreen.style.display = 'flex';
     if (spawnInterval) clearInterval(spawnInterval);
   }
@@ -1269,8 +1226,8 @@
     enemies = [];
     score = 0;
     speed = 4.5;
-    playerX = 190;
-    player.style.left = '190px';
+    playerX = 189;
+    player.style.left = '189px';
     scoreDisplay.textContent = 'Score: 0';
     speedDisplay.textContent = 'Vitesse: 4.5';
     playerNameDisplay.textContent = '';
@@ -1305,6 +1262,7 @@
   }
 
   startBtn.addEventListener('click', startGame);
+
   nameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') startGame();
   });
@@ -1320,6 +1278,8 @@
   });
 
   player.style.top = playerY + 'px';
+  player.style.bottom = 'auto';
+
   createLaneLines();
   initSides();
 </script>
