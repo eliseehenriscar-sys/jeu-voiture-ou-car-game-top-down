@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Feu sur la voiture</title>
+<title>Course 2D</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -346,29 +346,29 @@
   .enemy.truck-gray .body   { background: linear-gradient(to bottom, #7f8c8d, #5d6d7e); }
   .enemy.truck-orange .body { background: linear-gradient(to bottom, #e67e22, #ca6f1e); }
 
-  /* Feu collé sur la voiture */
-  .car-fire {
+  /* Feu fixe (ne bouge pas) */
+  .fire {
     position: absolute;
-    width: 18px;
-    height: 26px;
+    width: 22px;
+    height: 30px;
     background: radial-gradient(ellipse at bottom, #ff4500 0%, #ff8c00 40%, #ffd700 70%, transparent 100%);
     border-radius: 50% 50% 20% 20%;
     animation: flame 0.15s infinite alternate;
-    z-index: 15;
+    z-index: 30;
     pointer-events: none;
-    filter: blur(0.5px);
+    filter: blur(1px);
   }
-  .car-fire::before {
+  .fire::before {
     content: '';
     position: absolute;
-    top: -7px; left: 2px;
-    width: 13px; height: 16px;
+    top: -8px; left: 4px;
+    width: 14px; height: 18px;
     background: radial-gradient(ellipse at bottom, #ff6600 0%, #ffaa00 50%, transparent 100%);
     border-radius: 50% 50% 30% 30%;
   }
   @keyframes flame {
     0%   { transform: scaleY(1) scaleX(1); opacity: 1; }
-    100% { transform: scaleY(1.3) scaleX(0.85); opacity: 0.9; }
+    100% { transform: scaleY(1.2) scaleX(0.9); opacity: 0.9; }
   }
 
   .explosion-flash {
@@ -379,11 +379,11 @@
     border-radius: 50%;
     z-index: 25;
     pointer-events: none;
-    animation: flashOut 0.4s forwards;
+    animation: flashOut 0.35s forwards;
   }
   @keyframes flashOut {
     0%   { transform: scale(0.3); opacity: 1; }
-    100% { transform: scale(2.2); opacity: 0; }
+    100% { transform: scale(2); opacity: 0; }
   }
 
   #score {
@@ -934,33 +934,17 @@
     osc.stop(now + 0.45);
   }
 
-  // Feu collé sur la voiture du joueur (reste jusqu'au Game Over)
-  function attachFireToPlayer() {
-    // Positions relatives sur la voiture
-    const positions = [
-      { left: 5, top: -8 },
-      { left: 18, top: -12 },
-      { left: 12, top: 5 },
-      { left: 2, top: 15 },
-      { left: 22, top: 18 }
-    ];
+  // Feu FIXE sur la voiture (ne monte plus)
+  function createFireOnCar(carEl, offsetX = 0, offsetY = 0) {
+    const fire = document.createElement('div');
+    fire.className = 'fire';
+    fire.style.left = (11 + offsetX) + 'px';
+    fire.style.top = (15 + offsetY) + 'px';
+    carEl.appendChild(fire);   // attaché à la voiture → reste en place
 
-    positions.forEach(pos => {
-      const fire = document.createElement('div');
-      fire.className = 'car-fire';
-      fire.style.left = pos.left + 'px';
-      fire.style.top = pos.top + 'px';
-      fire.style.transform = `scale(${0.8 + Math.random() * 0.4})`;
-      player.appendChild(fire);
-    });
-
-    // Flash d'explosion
-    const flash = document.createElement('div');
-    flash.className = 'explosion-flash';
-    flash.style.left = (playerX - 20) + 'px';
-    flash.style.top = (playerY - 20) + 'px';
-    container.appendChild(flash);
-    setTimeout(() => flash.remove(), 400);
+    setTimeout(() => {
+      if (fire.parentNode) fire.remove();
+    }, 1200);
   }
 
   function createLaneLines() {
@@ -1144,20 +1128,26 @@
     stopEngineSound();
     playCrashSound();
 
-    // Feu qui RESTE sur ta voiture
-    attachFireToPlayer();
+    // Flash d'explosion
+    const flash = document.createElement('div');
+    flash.className = 'explosion-flash';
+    flash.style.left = (playerX - 15) + 'px';
+    flash.style.top = (playerY - 10) + 'px';
+    container.appendChild(flash);
+    setTimeout(() => flash.remove(), 350);
 
-    // Aussi un peu de feu sur l'ennemi
-    const enemyFire = document.createElement('div');
-    enemyFire.className = 'car-fire';
-    enemyFire.style.left = '10px';
-    enemyFire.style.top = '-10px';
-    enemy.appendChild(enemyFire);
+    // Feu fixé SUR la voiture du joueur (ne bouge plus)
+    createFireOnCar(player, 0, 0);
+    createFireOnCar(player, 12, -5);
+    createFireOnCar(player, -5, 8);
 
-    // Laisser voir le feu 2.8 secondes
+    // Un peu de feu aussi sur l'ennemi
+    createFireOnCar(enemy, 0, 10);
+
+    // Durée réduite : 1,2 seconde
     setTimeout(() => {
       endGame();
-    }, 2800);
+    }, 1200);
   }
 
   function endGame() {
@@ -1175,10 +1165,7 @@
   function resetGameState() {
     enemies.forEach(e => e.remove());
     enemies = [];
-
-    // Enlever le feu de la voiture
-    player.querySelectorAll('.car-fire').forEach(f => f.remove());
-    document.querySelectorAll('.explosion-flash').forEach(el => el.remove());
+    document.querySelectorAll('.fire, .explosion-flash').forEach(el => el.remove());
 
     score = 0;
     speed = 4.5;
