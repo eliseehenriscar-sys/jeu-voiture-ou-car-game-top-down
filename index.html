@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Jour / Nuit réaliste</title>
+<title>Course 2D - Jour / Nuit</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -29,7 +29,6 @@
     transition: background 2s ease;
   }
 
-  /* Soleil (visible le jour) */
   #sun {
     position: absolute;
     top: 30px;
@@ -48,7 +47,6 @@
     pointer-events: none;
   }
 
-  /* Overlay nuit (plus sombre) */
   #night-overlay {
     position: absolute;
     top: 0; left: 0;
@@ -95,7 +93,6 @@
     height: 45px;
     background: #fff;
     border-radius: 3px;
-    transition: opacity 1.5s ease;
   }
   .lane-line.left  { left: 103px; }
   .lane-line.right { left: 212px; }
@@ -376,7 +373,6 @@
 
   .enemy { transform: rotate(180deg); }
 
-  /* ===== NUIT : lumières allumées ===== */
   .night-mode .headlight,
   .night-mode .light-beam {
     opacity: 1 !important;
@@ -401,19 +397,18 @@
     }
   }
 
-  /* Route plus sombre la nuit */
   .night-mode #road {
     background: #1a1a1a !important;
     filter: brightness(0.55);
   }
   .night-mode .lane-line {
-    opacity: 0.55;
+    opacity: 1;
+    background: #fff;
   }
   .night-mode .side {
     filter: brightness(0.4);
   }
 
-  /* Jour : route plus claire */
   .day-mode #road {
     filter: brightness(1.15);
   }
@@ -664,10 +659,7 @@
 
   <div id="road"></div>
 
-  <!-- Soleil -->
   <div id="sun"></div>
-
-  <!-- Overlay nuit -->
   <div id="night-overlay"></div>
 
   <div id="player" class="car">
