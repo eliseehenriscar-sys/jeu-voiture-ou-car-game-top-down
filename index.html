@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Explosion & Feux clignotants</title>
+<title>Course 2D</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -148,7 +148,6 @@
     transform: rotate(25deg);
   }
 
-  /* ===== VOITURES ===== */
   .car {
     position: absolute;
     width: 42px;
@@ -321,7 +320,7 @@
 
   .enemy { transform: rotate(180deg); }
 
-  /* Feux qui clignotent sur les ennemis */
+  /* Clignotement des phares (SANS SON - purement visuel) */
   .enemy .headlight {
     animation: blinkLights 0.7s infinite alternate;
   }
@@ -348,7 +347,6 @@
   .enemy.truck-gray .body   { background: linear-gradient(to bottom, #7f8c8d, #5d6d7e); }
   .enemy.truck-orange .body { background: linear-gradient(to bottom, #e67e22, #ca6f1e); }
 
-  /* ===== FEU / EXPLOSION ===== */
   .fire {
     position: absolute;
     width: 20px;
@@ -892,13 +890,11 @@
     if (noiseGain) noiseGain.gain.setTargetAtTime(0.028, audioCtx.currentTime, 0.1);
   }
 
-  // Son d'explosion (boum)
   function playCrashSound() {
     if (!audioCtx) return;
 
     const now = audioCtx.currentTime;
 
-    // Bruit d'impact
     const bufferSize = audioCtx.sampleRate * 0.6;
     const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -923,7 +919,6 @@
     noiseGainNode.connect(audioCtx.destination);
     noise.start(now);
 
-    // Basse "boum"
     const osc = audioCtx.createOscillator();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(120, now);
@@ -940,7 +935,6 @@
   }
 
   function createFire(x, y) {
-    // Flash d'explosion
     const flash = document.createElement('div');
     flash.className = 'explosion-flash';
     flash.style.left = (x - 20) + 'px';
@@ -948,7 +942,6 @@
     container.appendChild(flash);
     setTimeout(() => flash.remove(), 400);
 
-    // Plusieurs flammes
     for (let i = 0; i < 5; i++) {
       const fire = document.createElement('div');
       fire.className = 'fire';
@@ -957,7 +950,6 @@
       fire.style.transform = `scale(${0.7 + Math.random() * 0.6})`;
       container.appendChild(fire);
 
-      // Faire monter un peu les flammes
       let fy = parseFloat(fire.style.top);
       const interval = setInterval(() => {
         fy -= 0.8;
@@ -1153,18 +1145,15 @@
     stopEngineSound();
     playCrashSound();
 
-    // Position du crash
     const pRect = player.getBoundingClientRect();
     const cRect = container.getBoundingClientRect();
     const crashX = pRect.left - cRect.left + 10;
     const crashY = pRect.top - cRect.top + 20;
 
-    // Feu sur le joueur et l'ennemi
     createFire(crashX, crashY);
     createFire(crashX + 15, crashY - 10);
     createFire(parseFloat(enemy.style.left) || crashX, parseFloat(enemy.style.top) || crashY);
 
-    // Laisser voir le feu 2.5 secondes puis Game Over
     setTimeout(() => {
       endGame();
     }, 2500);
@@ -1185,7 +1174,6 @@
   function resetGameState() {
     enemies.forEach(e => e.remove());
     enemies = [];
-    // Nettoyer les feux restants
     document.querySelectorAll('.fire, .explosion-flash').forEach(el => el.remove());
 
     score = 0;
