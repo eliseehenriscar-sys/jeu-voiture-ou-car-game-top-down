@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Feu sur la voiture</title>
+<title>Course 2D - 4 voies</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,7 +19,7 @@
 
   #game-container {
     position: relative;
-    width: 420px;
+    width: 460px;
     height: 650px;
     background: #1a1a1a;
     border: 5px solid #fff;
@@ -30,8 +30,8 @@
 
   #road {
     position: absolute;
-    left: 50px;
-    width: 320px;
+    left: 45px;
+    width: 370px;
     height: 100%;
     background: #3a3a3a;
     transition: background 1.5s ease;
@@ -46,8 +46,8 @@
     display: none;
     z-index: 5;
   }
-  .bridge-rail.left  { left: 50px; }
-  .bridge-rail.right { left: 362px; }
+  .bridge-rail.left  { left: 45px; }
+  .bridge-rail.right { left: 407px; }
 
   .bridge-post {
     position: absolute;
@@ -59,18 +59,16 @@
 
   .lane-line {
     position: absolute;
-    width: 5px;
-    height: 45px;
+    width: 4px;
+    height: 40px;
     background: #fff;
-    border-radius: 3px;
+    border-radius: 2px;
   }
-  .lane-line.left  { left: 103px; }
-  .lane-line.right { left: 212px; }
 
   .side {
     position: absolute;
     top: 0;
-    width: 50px;
+    width: 45px;
     height: 100%;
     overflow: hidden;
     transition: background 1.8s ease;
@@ -81,59 +79,56 @@
   .deco { position: absolute; pointer-events: none; }
 
   .bush {
-    width: 18px; height: 18px;
+    width: 16px; height: 16px;
     background: #2d8a3e;
     border-radius: 50%;
-    box-shadow: 0 0 5px rgba(0,0,0,0.35);
   }
   .tree {
-    width: 24px; height: 24px;
+    width: 22px; height: 22px;
     background: #1f6b2e;
     border-radius: 50%;
-    box-shadow: 0 0 6px rgba(0,0,0,0.4);
   }
   .tree::after {
     content: '';
     position: absolute;
-    bottom: -7px; left: 50%;
+    bottom: -6px; left: 50%;
     transform: translateX(-50%);
-    width: 5px; height: 10px;
+    width: 5px; height: 9px;
     background: #5c3a1e;
     border-radius: 2px;
   }
 
   .dune {
-    width: 38px; height: 12px;
+    width: 34px; height: 11px;
     background: rgba(255,255,255,0.22);
     border-radius: 50%;
-    left: 6px;
+    left: 5px;
   }
   .cactus {
-    width: 8px; height: 22px;
+    width: 7px; height: 20px;
     background: #2d8a3e;
     border-radius: 3px;
   }
   .cactus::before {
     content: '';
     position: absolute;
-    top: 6px; left: -6px;
-    width: 10px; height: 6px;
+    top: 5px; left: -5px;
+    width: 9px; height: 5px;
     background: #2d8a3e;
     border-radius: 3px;
   }
 
   .old-tree {
-    width: 8px; height: 36px;
+    width: 7px; height: 32px;
     background: #5c4033;
     border-radius: 3px;
     position: relative;
-    box-shadow: 1px 0 0 #3d2b22;
   }
   .old-tree::before {
     content: '';
     position: absolute;
-    top: 2px; left: -12px;
-    width: 22px; height: 5px;
+    top: 2px; left: -10px;
+    width: 20px; height: 4px;
     background: #6b4c3a;
     border-radius: 3px;
     transform: rotate(-30deg);
@@ -141,8 +136,8 @@
   .old-tree::after {
     content: '';
     position: absolute;
-    top: 12px; left: -8px;
-    width: 18px; height: 4px;
+    top: 11px; left: -7px;
+    width: 16px; height: 3px;
     background: #6b4c3a;
     border-radius: 2px;
     transform: rotate(25deg);
@@ -150,60 +145,60 @@
 
   .car {
     position: absolute;
-    width: 42px;
-    height: 80px;
+    width: 40px;
+    height: 76px;
     z-index: 10;
   }
   .car .body {
     position: absolute;
-    width: 42px; height: 72px;
-    border-radius: 12px 12px 7px 7px;
+    width: 40px; height: 68px;
+    border-radius: 11px 11px 6px 6px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
   }
   .car .roof {
     position: absolute;
-    top: 15px; left: 5px;
-    width: 32px; height: 28px;
+    top: 14px; left: 5px;
+    width: 30px; height: 26px;
     background: rgba(0,0,0,0.2);
-    border-radius: 7px 7px 4px 4px;
+    border-radius: 6px 6px 4px 4px;
   }
   .car .windshield {
     position: absolute;
-    top: 11px; left: 6px;
-    width: 30px; height: 15px;
+    top: 10px; left: 5px;
+    width: 30px; height: 14px;
     background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
     border-radius: 5px 5px 2px 2px;
     border: 1px solid rgba(0,0,0,0.25);
   }
   .car .rear-window {
     position: absolute;
-    top: 42px; left: 6px;
-    width: 30px; height: 11px;
+    top: 40px; left: 5px;
+    width: 30px; height: 10px;
     background: linear-gradient(to bottom, #7ec8ff, #3a8de0);
     border-radius: 2px 2px 4px 4px;
     border: 1px solid rgba(0,0,0,0.25);
   }
   .car .headlight {
     position: absolute;
-    top: 3px; width: 9px; height: 5px;
+    top: 2px; width: 8px; height: 5px;
     background: #fff8dc;
     border-radius: 2px;
     box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
   }
-  .car .headlight.left  { left: 5px; }
-  .car .headlight.right { right: 5px; }
+  .car .headlight.left  { left: 4px; }
+  .car .headlight.right { right: 4px; }
   .car .taillight {
     position: absolute;
-    bottom: 4px; width: 9px; height: 4px;
+    bottom: 3px; width: 8px; height: 4px;
     background: #ff3b3b;
     border-radius: 2px;
     box-shadow: 0 0 4px #ff3b3b;
   }
-  .car .taillight.left  { left: 5px; }
-  .car .taillight.right { right: 5px; }
+  .car .taillight.left  { left: 4px; }
+  .car .taillight.right { right: 4px; }
   .car .mirror {
     position: absolute;
-    top: 18px; width: 5px; height: 3px;
+    top: 16px; width: 5px; height: 3px;
     background: #222;
     border-radius: 1px;
   }
@@ -211,29 +206,29 @@
   .car .mirror.right { right: -4px; }
   .car .wheel {
     position: absolute;
-    width: 10px; height: 16px;
+    width: 9px; height: 15px;
     background: #111;
     border-radius: 3px;
     border: 2px solid #444;
     z-index: 2;
   }
-  .car .wheel.front-left  { top: 10px; left: -4px; }
-  .car .wheel.front-right { top: 10px; right: -4px; }
-  .car .wheel.rear-left   { bottom: 10px; left: -4px; }
-  .car .wheel.rear-right  { bottom: 10px; right: -4px; }
+  .car .wheel.front-left  { top: 9px; left: -4px; }
+  .car .wheel.front-right { top: 9px; right: -4px; }
+  .car .wheel.rear-left   { bottom: 9px; left: -4px; }
+  .car .wheel.rear-right  { bottom: 9px; right: -4px; }
   .car .wheel::after {
     content: '';
     position: absolute;
     top: 3px; left: 2px;
-    width: 3px; height: 6px;
+    width: 3px; height: 5px;
     background: #999;
     border-radius: 1px;
   }
   .car .light-beam {
     position: absolute;
-    top: -42px; left: 50%;
+    top: -40px; left: 50%;
     transform: translateX(-50%);
-    width: 52px; height: 44px;
+    width: 48px; height: 40px;
     background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.4) 0%, rgba(255, 230, 120, 0.15) 40%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
@@ -243,34 +238,34 @@
 
   .truck {
     position: absolute;
-    width: 48px;
-    height: 110px;
+    width: 46px;
+    height: 105px;
     z-index: 10;
   }
   .truck .body {
     position: absolute;
-    width: 48px; height: 102px;
+    width: 46px; height: 97px;
     border-radius: 6px 6px 5px 5px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
   }
   .truck .cabin {
     position: absolute;
     top: 5px; left: 4px;
-    width: 40px; height: 28px;
+    width: 38px; height: 26px;
     background: rgba(0,0,0,0.22);
     border-radius: 4px;
   }
   .truck .windshield {
     position: absolute;
-    top: 8px; left: 7px;
-    width: 34px; height: 18px;
+    top: 8px; left: 6px;
+    width: 34px; height: 16px;
     background: linear-gradient(to bottom, #a0d8ff, #4a9eff);
     border-radius: 4px;
     border: 1px solid rgba(0,0,0,0.25);
   }
   .truck .headlight {
     position: absolute;
-    top: 3px; width: 11px; height: 6px;
+    top: 2px; width: 10px; height: 5px;
     background: #fff8dc;
     border-radius: 2px;
     box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
@@ -279,7 +274,7 @@
   .truck .headlight.right { right: 5px; }
   .truck .taillight {
     position: absolute;
-    bottom: 4px; width: 11px; height: 5px;
+    bottom: 3px; width: 10px; height: 5px;
     background: #ff3b3b;
     border-radius: 2px;
     box-shadow: 0 0 4px #ff3b3b;
@@ -288,29 +283,29 @@
   .truck .taillight.right { right: 5px; }
   .truck .wheel {
     position: absolute;
-    width: 11px; height: 18px;
+    width: 10px; height: 17px;
     background: #111;
     border-radius: 3px;
     border: 2px solid #444;
     z-index: 2;
   }
-  .truck .wheel.front-left  { top: 12px; left: -5px; }
-  .truck .wheel.front-right { top: 12px; right: -5px; }
-  .truck .wheel.rear-left   { bottom: 10px; left: -5px; }
-  .truck .wheel.rear-right  { bottom: 10px; right: -5px; }
+  .truck .wheel.front-left  { top: 11px; left: -5px; }
+  .truck .wheel.front-right { top: 11px; right: -5px; }
+  .truck .wheel.rear-left   { bottom: 9px; left: -5px; }
+  .truck .wheel.rear-right  { bottom: 9px; right: -5px; }
   .truck .wheel::after {
     content: '';
     position: absolute;
     top: 4px; left: 2px;
-    width: 4px; height: 7px;
+    width: 4px; height: 6px;
     background: #999;
     border-radius: 1px;
   }
   .truck .light-beam {
     position: absolute;
-    top: -48px; left: 50%;
+    top: -45px; left: 50%;
     transform: translateX(-50%);
-    width: 60px; height: 50px;
+    width: 56px; height: 46px;
     background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.45) 0%, rgba(255, 230, 120, 0.18) 40%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
@@ -318,9 +313,10 @@
     filter: blur(4px);
   }
 
-  .enemy { transform: rotate(180deg); }
+  /* Voitures qui viennent vers toi */
+  .enemy.oncoming { transform: rotate(180deg); }
 
-  .enemy .headlight {
+  .enemy.oncoming .headlight {
     animation: blinkLights 0.7s infinite alternate;
   }
   @keyframes blinkLights {
@@ -346,29 +342,28 @@
   .enemy.truck-gray .body   { background: linear-gradient(to bottom, #7f8c8d, #5d6d7e); }
   .enemy.truck-orange .body { background: linear-gradient(to bottom, #e67e22, #ca6f1e); }
 
-  /* Feu collé sur la voiture */
+  /* Feu FIXE sur la voiture (pas de mouvement) */
   .car-fire {
     position: absolute;
-    width: 18px;
-    height: 26px;
+    width: 16px;
+    height: 24px;
     background: radial-gradient(ellipse at bottom, #ff4500 0%, #ff8c00 40%, #ffd700 70%, transparent 100%);
     border-radius: 50% 50% 20% 20%;
-    animation: flame 0.15s infinite alternate;
+    animation: flameFlicker 0.2s infinite alternate;
     z-index: 15;
     pointer-events: none;
-    filter: blur(0.5px);
   }
   .car-fire::before {
     content: '';
     position: absolute;
-    top: -7px; left: 2px;
-    width: 13px; height: 16px;
+    top: -6px; left: 2px;
+    width: 12px; height: 14px;
     background: radial-gradient(ellipse at bottom, #ff6600 0%, #ffaa00 50%, transparent 100%);
     border-radius: 50% 50% 30% 30%;
   }
-  @keyframes flame {
-    0%   { transform: scaleY(1) scaleX(1); opacity: 1; }
-    100% { transform: scaleY(1.3) scaleX(0.85); opacity: 0.9; }
+  @keyframes flameFlicker {
+    0%   { opacity: 1; }
+    100% { opacity: 0.75; }
   }
 
   .explosion-flash {
@@ -635,7 +630,7 @@
   const railLeft = document.getElementById('rail-left');
   const railRight = document.getElementById('rail-right');
 
-  let playerX = 189;
+  let playerX = 210;
   const playerY = 500;
   let score = 0;
   let speed = 4.5;
@@ -653,6 +648,16 @@
   let currentLocation = 0;
   let lastLocationScore = 0;
   let currentType = "forest";
+
+  // 4 voies : positions X
+  // Voie 0 et 1 = même sens (same)
+  // Voie 2 et 3 = viennent vers toi (oncoming)
+  const lanes = [
+    { x: 70,  type: 'same' },
+    { x: 155, type: 'same' },
+    { x: 250, type: 'oncoming' },
+    { x: 335, type: 'oncoming' }
+  ];
 
   const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
   const truckColors = ['truck-red', 'truck-blue', 'truck-green', 'truck-yellow', 'truck-gray', 'truck-orange'];
@@ -675,17 +680,17 @@
 
     if (type === "forest") {
       deco.classList.add(Math.random() > 0.4 ? 'tree' : 'bush');
-      deco.style.left = (6 + Math.random() * 14) + 'px';
+      deco.style.left = (5 + Math.random() * 12) + 'px';
     } else if (type === "sea") {
       return;
     } else if (type === "desert") {
       const r = Math.random();
       if (r < 0.45) {
         deco.classList.add('old-tree');
-        deco.style.left = (8 + Math.random() * 22) + 'px';
+        deco.style.left = (6 + Math.random() * 18) + 'px';
       } else if (r < 0.65) {
         deco.classList.add('cactus');
-        deco.style.left = (12 + Math.random() * 18) + 'px';
+        deco.style.left = (10 + Math.random() * 15) + 'px';
       } else {
         deco.classList.add('dune');
       }
@@ -934,15 +939,14 @@
     osc.stop(now + 0.45);
   }
 
-  // Feu collé sur la voiture du joueur (reste jusqu'au Game Over)
+  // Feu FIXE sur la voiture (ne bouge pas)
   function attachFireToPlayer() {
-    // Positions relatives sur la voiture
     const positions = [
-      { left: 5, top: -8 },
-      { left: 18, top: -12 },
-      { left: 12, top: 5 },
-      { left: 2, top: 15 },
-      { left: 22, top: 18 }
+      { left: 4, top: -6 },
+      { left: 16, top: -10 },
+      { left: 10, top: 4 },
+      { left: 2, top: 14 },
+      { left: 20, top: 16 }
     ];
 
     positions.forEach(pos => {
@@ -950,11 +954,9 @@
       fire.className = 'car-fire';
       fire.style.left = pos.left + 'px';
       fire.style.top = pos.top + 'px';
-      fire.style.transform = `scale(${0.8 + Math.random() * 0.4})`;
       player.appendChild(fire);
     });
 
-    // Flash d'explosion
     const flash = document.createElement('div');
     flash.className = 'explosion-flash';
     flash.style.left = (playerX - 20) + 'px';
@@ -964,19 +966,18 @@
   }
 
   function createLaneLines() {
-    for (let i = 0; i < 14; i++) {
-      const lineL = document.createElement('div');
-      lineL.classList.add('lane-line', 'left');
-      lineL.style.top = (i * 70 - 40) + 'px';
-      road.appendChild(lineL);
-      laneLines.push(lineL);
-
-      const lineR = document.createElement('div');
-      lineR.classList.add('lane-line', 'right');
-      lineR.style.top = (i * 70 - 40) + 'px';
-      road.appendChild(lineR);
-      laneLines.push(lineR);
-    }
+    // 3 lignes pour 4 voies
+    const linePositions = [115, 200, 290];
+    linePositions.forEach(left => {
+      for (let i = 0; i < 14; i++) {
+        const line = document.createElement('div');
+        line.classList.add('lane-line');
+        line.style.left = left + 'px';
+        line.style.top = (i * 65 - 40) + 'px';
+        road.appendChild(line);
+        laneLines.push(line);
+      }
+    });
   }
 
   function moveEnvironment() {
@@ -990,8 +991,12 @@
   }
 
   function createEnemy() {
-    const isTruck = Math.random() < 0.28;
+    const isTruck = Math.random() < 0.25;
     const enemy = document.createElement('div');
+
+    // Choisir une voie au hasard
+    const lane = lanes[Math.floor(Math.random() * lanes.length)];
+    const isOncoming = lane.type === 'oncoming';
 
     if (isTruck) {
       enemy.classList.add('truck', 'enemy');
@@ -1036,9 +1041,13 @@
       `;
     }
 
-    const positions = [78, 189, 300];
-    enemy.style.left = positions[Math.floor(Math.random() * 3)] + 'px';
+    if (isOncoming) {
+      enemy.classList.add('oncoming');
+    }
+
+    enemy.style.left = lane.x + 'px';
     enemy.style.top = isTruck ? '-120px' : '-95px';
+    enemy.dataset.type = lane.type; // same ou oncoming
 
     container.appendChild(enemy);
     enemies.push(enemy);
@@ -1081,8 +1090,8 @@
     if (isPaused || isCrashing) return;
 
     const moveSpeed = 5.5;
-    if (keys.left && playerX > 58)  playerX -= moveSpeed;
-    if (keys.right && playerX < 320) playerX += moveSpeed;
+    if (keys.left && playerX > 55)  playerX -= moveSpeed;
+    if (keys.right && playerX < 365) playerX += moveSpeed;
     player.style.left = playerX + 'px';
 
     if (keys.up) {
@@ -1108,7 +1117,16 @@
 
     enemies.forEach((enemy, index) => {
       let top = parseFloat(enemy.style.top) || 0;
-      top += speed;
+      const type = enemy.dataset.type;
+
+      // Même sens : plus lent (tu les dépasses)
+      // Venant vers toi : vitesse normale
+      if (type === 'same') {
+        top += speed * 0.45;
+      } else {
+        top += speed;
+      }
+
       enemy.style.top = top + 'px';
 
       if (checkCollision(player, enemy)) {
@@ -1128,10 +1146,10 @@
     const aRect = a.getBoundingClientRect();
     const bRect = b.getBoundingClientRect();
     return !(
-      aRect.bottom - 15 < bRect.top ||
+      aRect.bottom - 14 < bRect.top ||
       aRect.top + 10 > bRect.bottom ||
-      aRect.right - 8 < bRect.left ||
-      aRect.left + 8 > bRect.right
+      aRect.right - 7 < bRect.left ||
+      aRect.left + 7 > bRect.right
     );
   }
 
@@ -1144,17 +1162,14 @@
     stopEngineSound();
     playCrashSound();
 
-    // Feu qui RESTE sur ta voiture
     attachFireToPlayer();
 
-    // Aussi un peu de feu sur l'ennemi
     const enemyFire = document.createElement('div');
     enemyFire.className = 'car-fire';
     enemyFire.style.left = '10px';
-    enemyFire.style.top = '-10px';
+    enemyFire.style.top = '-8px';
     enemy.appendChild(enemyFire);
 
-    // Laisser voir le feu 2.8 secondes
     setTimeout(() => {
       endGame();
     }, 2800);
@@ -1176,14 +1191,13 @@
     enemies.forEach(e => e.remove());
     enemies = [];
 
-    // Enlever le feu de la voiture
     player.querySelectorAll('.car-fire').forEach(f => f.remove());
     document.querySelectorAll('.explosion-flash').forEach(el => el.remove());
 
     score = 0;
     speed = 4.5;
-    playerX = 189;
-    player.style.left = '189px';
+    playerX = 210;
+    player.style.left = '210px';
     scoreDisplay.textContent = 'Score: 0';
     speedDisplay.textContent = 'Vitesse: 4.5';
     playerNameDisplay.textContent = '';
@@ -1216,7 +1230,7 @@
 
     spawnInterval = setInterval(() => {
       if (gameRunning && !isPaused && !isCrashing) createEnemy();
-    }, 1500);
+    }, 1400);
   }
 
   startBtn.addEventListener('click', startGame);
