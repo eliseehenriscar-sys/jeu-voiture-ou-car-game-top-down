@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - 4 voies</title>
+<title>Course 2D - 4 voies bien placées</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -313,7 +313,6 @@
     filter: blur(4px);
   }
 
-  /* Voitures qui viennent vers toi */
   .enemy.oncoming { transform: rotate(180deg); }
 
   .enemy.oncoming .headlight {
@@ -342,7 +341,6 @@
   .enemy.truck-gray .body   { background: linear-gradient(to bottom, #7f8c8d, #5d6d7e); }
   .enemy.truck-orange .body { background: linear-gradient(to bottom, #e67e22, #ca6f1e); }
 
-  /* Feu FIXE sur la voiture (pas de mouvement) */
   .car-fire {
     position: absolute;
     width: 16px;
@@ -630,7 +628,7 @@
   const railLeft = document.getElementById('rail-left');
   const railRight = document.getElementById('rail-right');
 
-  let playerX = 210;
+  let playerX = 163;
   const playerY = 500;
   let score = 0;
   let speed = 4.5;
@@ -649,14 +647,14 @@
   let lastLocationScore = 0;
   let currentType = "forest";
 
-  // 4 voies : positions X
-  // Voie 0 et 1 = même sens (same)
-  // Voie 2 et 3 = viennent vers toi (oncoming)
+  // 4 voies bien centrées (route de 45 à 415)
+  // Voie largeur ≈ 92.5px → centre de chaque voie - moitié voiture (20px)
+  // GAUCHE = même sens | DROITE = viennent vers toi
   const lanes = [
-    { x: 70,  type: 'same' },
-    { x: 155, type: 'same' },
-    { x: 250, type: 'oncoming' },
-    { x: 335, type: 'oncoming' }
+    { x: 71,  type: 'same' },      // Voie 1 gauche - même sens
+    { x: 163, type: 'same' },      // Voie 2 gauche - même sens
+    { x: 255, type: 'oncoming' },  // Voie 3 droite - vient vers toi
+    { x: 347, type: 'oncoming' }   // Voie 4 droite - vient vers toi
   ];
 
   const carColors = ['green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'white'];
@@ -939,7 +937,6 @@
     osc.stop(now + 0.45);
   }
 
-  // Feu FIXE sur la voiture (ne bouge pas)
   function attachFireToPlayer() {
     const positions = [
       { left: 4, top: -6 },
@@ -966,8 +963,8 @@
   }
 
   function createLaneLines() {
-    // 3 lignes pour 4 voies
-    const linePositions = [115, 200, 290];
+    // Lignes entre les 4 voies (centres des séparations)
+    const linePositions = [137, 229, 321];
     linePositions.forEach(left => {
       for (let i = 0; i < 14; i++) {
         const line = document.createElement('div');
@@ -994,7 +991,6 @@
     const isTruck = Math.random() < 0.25;
     const enemy = document.createElement('div');
 
-    // Choisir une voie au hasard
     const lane = lanes[Math.floor(Math.random() * lanes.length)];
     const isOncoming = lane.type === 'oncoming';
 
@@ -1045,9 +1041,10 @@
       enemy.classList.add('oncoming');
     }
 
+    // Position exacte au centre de la voie
     enemy.style.left = lane.x + 'px';
     enemy.style.top = isTruck ? '-120px' : '-95px';
-    enemy.dataset.type = lane.type; // same ou oncoming
+    enemy.dataset.type = lane.type;
 
     container.appendChild(enemy);
     enemies.push(enemy);
@@ -1091,7 +1088,7 @@
 
     const moveSpeed = 5.5;
     if (keys.left && playerX > 55)  playerX -= moveSpeed;
-    if (keys.right && playerX < 365) playerX += moveSpeed;
+    if (keys.right && playerX < 370) playerX += moveSpeed;
     player.style.left = playerX + 'px';
 
     if (keys.up) {
@@ -1119,12 +1116,10 @@
       let top = parseFloat(enemy.style.top) || 0;
       const type = enemy.dataset.type;
 
-      // Même sens : plus lent (tu les dépasses)
-      // Venant vers toi : vitesse normale
       if (type === 'same') {
-        top += speed * 0.45;
+        top += speed * 0.45; // même sens → plus lent
       } else {
-        top += speed;
+        top += speed;        // vient vers toi
       }
 
       enemy.style.top = top + 'px';
@@ -1161,7 +1156,6 @@
 
     stopEngineSound();
     playCrashSound();
-
     attachFireToPlayer();
 
     const enemyFire = document.createElement('div');
@@ -1196,8 +1190,8 @@
 
     score = 0;
     speed = 4.5;
-    playerX = 210;
-    player.style.left = '210px';
+    playerX = 163;
+    player.style.left = '163px';
     scoreDisplay.textContent = 'Score: 0';
     speedDisplay.textContent = 'Vitesse: 4.5';
     playerNameDisplay.textContent = '';
