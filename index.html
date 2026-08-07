@@ -26,7 +26,6 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 40px rgba(0,0,0,0.9);
-    transition: background 2s ease;
   }
 
   #sun {
@@ -37,21 +36,19 @@
     height: 55px;
     background: radial-gradient(circle, #fff9c4 0%, #ffeb3b 40%, #ff9800 70%, transparent 100%);
     border-radius: 50%;
-    box-shadow: 
-      0 0 30px #ffeb3b,
-      0 0 60px #ff9800,
-      0 0 90px rgba(255, 152, 0, 0.5);
+    box-shadow: 0 0 30px #ffeb3b, 0 0 60px #ff9800, 0 0 90px rgba(255, 152, 0, 0.5);
     z-index: 7;
     opacity: 1;
     transition: opacity 2s ease;
     pointer-events: none;
   }
 
+  /* Nuit moins sombre */
   #night-overlay {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(2, 5, 20, 0.72);
+    background: rgba(5, 10, 35, 0.45);
     z-index: 8;
     pointer-events: none;
     opacity: 0;
@@ -64,7 +61,8 @@
     width: 320px;
     height: 100%;
     background: #3a3a3a;
-    transition: background 2s ease, filter 2s ease;
+    transition: background 2s ease;
+    z-index: 2;
   }
 
   .bridge-rail {
@@ -87,12 +85,15 @@
     border-radius: 2px;
   }
 
+  /* Lignes TOUJOURS blanches */
   .lane-line {
     position: absolute;
     width: 5px;
     height: 45px;
-    background: #fff;
+    background: #ffffff !important;
     border-radius: 3px;
+    opacity: 1 !important;
+    z-index: 3;
   }
   .lane-line.left  { left: 103px; }
   .lane-line.right { left: 212px; }
@@ -104,6 +105,7 @@
     height: 100%;
     overflow: hidden;
     transition: background 1.8s ease, filter 2s ease;
+    z-index: 1;
   }
   .side.left  { left: 0; }
   .side.right { right: 0; }
@@ -182,7 +184,7 @@
     position: absolute;
     width: 42px;
     height: 80px;
-    z-index: 10;
+    z-index: 12;
   }
   .car .body {
     position: absolute;
@@ -289,7 +291,7 @@
     position: absolute;
     width: 48px;
     height: 110px;
-    z-index: 10;
+    z-index: 12;
   }
   .truck .body {
     position: absolute;
@@ -397,20 +399,20 @@
     }
   }
 
+  /* Nuit : route un peu plus sombre, SANS assombrir les lignes */
   .night-mode #road {
-    background: #1a1a1a !important;
-    filter: brightness(0.55);
+    background: #2a2a2a !important;
   }
   .night-mode .lane-line {
-    opacity: 1;
-    background: #fff;
+    background: #ffffff !important;
+    opacity: 1 !important;
   }
   .night-mode .side {
-    filter: brightness(0.4);
+    filter: brightness(0.55);
   }
 
   .day-mode #road {
-    filter: brightness(1.15);
+    background: #3a3a3a;
   }
   .day-mode .side {
     filter: brightness(1.1);
