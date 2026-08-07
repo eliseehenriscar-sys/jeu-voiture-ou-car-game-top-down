@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Course 2D - Klaxon + Crash + Feu</title>
+<title>Course 2D - Explosion & Feux clignotants</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -157,8 +157,7 @@
   }
   .car .body {
     position: absolute;
-    width: 42px;
-    height: 72px;
+    width: 42px; height: 72px;
     border-radius: 12px 12px 7px 7px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
   }
@@ -191,7 +190,6 @@
     background: #fff8dc;
     border-radius: 2px;
     box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
-    transition: opacity 0.08s;
   }
   .car .headlight.left  { left: 5px; }
   .car .headlight.right { right: 5px; }
@@ -234,11 +232,9 @@
   }
   .car .light-beam {
     position: absolute;
-    top: -42px;
-    left: 50%;
+    top: -42px; left: 50%;
     transform: translateX(-50%);
-    width: 52px;
-    height: 44px;
+    width: 52px; height: 44px;
     background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.4) 0%, rgba(255, 230, 120, 0.15) 40%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
@@ -254,8 +250,7 @@
   }
   .truck .body {
     position: absolute;
-    width: 48px;
-    height: 102px;
+    width: 48px; height: 102px;
     border-radius: 6px 6px 5px 5px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5);
   }
@@ -280,7 +275,6 @@
     background: #fff8dc;
     border-radius: 2px;
     box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
-    transition: opacity 0.08s;
   }
   .truck .headlight.left  { left: 5px; }
   .truck .headlight.right { right: 5px; }
@@ -315,11 +309,9 @@
   }
   .truck .light-beam {
     position: absolute;
-    top: -48px;
-    left: 50%;
+    top: -48px; left: 50%;
     transform: translateX(-50%);
-    width: 60px;
-    height: 50px;
+    width: 60px; height: 50px;
     background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.45) 0%, rgba(255, 230, 120, 0.18) 40%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
@@ -329,13 +321,13 @@
 
   .enemy { transform: rotate(180deg); }
 
-  /* Clignotement des phares */
-  .blink .headlight {
-    animation: blinkHeadlight 0.18s infinite alternate;
+  /* Feux qui clignotent sur les ennemis */
+  .enemy .headlight {
+    animation: blinkLights 0.7s infinite alternate;
   }
-  @keyframes blinkHeadlight {
-    from { opacity: 1; box-shadow: 0 0 8px #fff8dc, 0 0 16px #ffeaa7; }
-    to   { opacity: 0.15; box-shadow: none; }
+  @keyframes blinkLights {
+    0%   { opacity: 1; box-shadow: 0 0 6px #fff8dc, 0 0 14px #ffeaa7; }
+    100% { opacity: 0.25; box-shadow: 0 0 2px #fff8dc; }
   }
 
   #player .body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
@@ -356,38 +348,44 @@
   .enemy.truck-gray .body   { background: linear-gradient(to bottom, #7f8c8d, #5d6d7e); }
   .enemy.truck-orange .body { background: linear-gradient(to bottom, #e67e22, #ca6f1e); }
 
-  /* ===== EXPLOSION / FEU ===== */
-  .explosion {
+  /* ===== FEU / EXPLOSION ===== */
+  .fire {
     position: absolute;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #fff 0%, #ffeb3b 15%, #ff9800 35%, #f44336 60%, transparent 80%);
-    box-shadow: 0 0 30px #ff5722, 0 0 60px #ff9800;
-    z-index: 50;
+    width: 20px;
+    height: 28px;
+    background: radial-gradient(ellipse at bottom, #ff4500 0%, #ff8c00 40%, #ffd700 70%, transparent 100%);
+    border-radius: 50% 50% 20% 20%;
+    animation: flame 0.15s infinite alternate;
+    z-index: 30;
     pointer-events: none;
-    animation: explode 0.7s forwards;
+    filter: blur(1px);
   }
-  @keyframes explode {
-    0%   { transform: scale(0.3); opacity: 1; }
-    40%  { transform: scale(1.4); opacity: 1; }
-    100% { transform: scale(2.2); opacity: 0; }
+  .fire::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: 3px;
+    width: 14px; height: 18px;
+    background: radial-gradient(ellipse at bottom, #ff6600 0%, #ffaa00 50%, transparent 100%);
+    border-radius: 50% 50% 30% 30%;
+  }
+  @keyframes flame {
+    0%   { transform: scaleY(1) scaleX(1); opacity: 1; }
+    100% { transform: scaleY(1.25) scaleX(0.85); opacity: 0.85; }
   }
 
-  .fire-particle {
+  .explosion-flash {
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(255,200,50,0.9) 0%, rgba(255,80,0,0.5) 40%, transparent 70%);
     border-radius: 50%;
-    background: #ff5722;
-    box-shadow: 0 0 8px #ff9800;
-    z-index: 49;
+    z-index: 25;
     pointer-events: none;
-    animation: fireUp 0.8s forwards;
+    animation: flashOut 0.4s forwards;
   }
-  @keyframes fireUp {
-    0%   { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-60px) scale(0.2); opacity: 0; }
+  @keyframes flashOut {
+    0%   { transform: scale(0.3); opacity: 1; }
+    100% { transform: scale(2.2); opacity: 0; }
   }
 
   #score {
@@ -530,8 +528,7 @@
     color: white;
     border: none;
     border-radius: 50%;
-    width: 22px;
-    height: 22px;
+    width: 22px; height: 22px;
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -542,10 +539,7 @@
   }
   .delete-btn:hover { background: #c0392b; }
 
-  #final-score {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
+  #final-score { font-size: 24px; margin-bottom: 10px; }
 
   #instructions {
     position: absolute;
@@ -651,6 +645,7 @@
   const maxSpeed = 16;
   let gameRunning = false;
   let isPaused = false;
+  let isCrashing = false;
   let enemies = [];
   let keys = { left: false, right: false, up: false, down: false };
   let laneLines = [];
@@ -676,181 +671,6 @@
     { name: "Désert Mojave", type: "desert", bg: "linear-gradient(to right, #c4a35a, #dfc07a, #c4a35a)", road: "#4a4030" }
   ];
 
-  // ===== AUDIO =====
-  let audioCtx = null;
-  let engineOsc = null;
-  let engineGain = null;
-  let engineFilter = null;
-  let noiseNode = null;
-  let noiseGain = null;
-
-  function initAudio() {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    engineOsc = audioCtx.createOscillator();
-    engineOsc.type = 'sawtooth';
-    engineOsc.frequency.value = 95;
-
-    engineFilter = audioCtx.createBiquadFilter();
-    engineFilter.type = 'lowpass';
-    engineFilter.frequency.value = 700;
-
-    engineGain = audioCtx.createGain();
-    engineGain.gain.value = 0.12;
-
-    engineOsc.connect(engineFilter);
-    engineFilter.connect(engineGain);
-    engineGain.connect(audioCtx.destination);
-
-    const bufferSize = audioCtx.sampleRate * 2;
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-
-    noiseNode = audioCtx.createBufferSource();
-    noiseNode.buffer = buffer;
-    noiseNode.loop = true;
-
-    noiseGain = audioCtx.createGain();
-    noiseGain.gain.value = 0.028;
-
-    const noiseFilter = audioCtx.createBiquadFilter();
-    noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.value = 320;
-
-    noiseNode.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(audioCtx.destination);
-
-    engineOsc.start();
-    noiseNode.start();
-  }
-
-  function updateEngineSound() {
-    if (!audioCtx || !engineOsc) return;
-    const baseFreq = 90 + (speed * 10);
-    engineOsc.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.1);
-    engineFilter.frequency.setTargetAtTime(500 + speed * 45, audioCtx.currentTime, 0.1);
-  }
-
-  function stopEngineSound() {
-    if (engineGain) engineGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
-    if (noiseGain) noiseGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
-  }
-
-  function resumeEngineSound() {
-    if (engineGain) engineGain.gain.setTargetAtTime(0.12, audioCtx.currentTime, 0.1);
-    if (noiseGain) noiseGain.gain.setTargetAtTime(0.028, audioCtx.currentTime, 0.1);
-  }
-
-  // Klaxon "pom-pom" / "ki-ki"
-  function playHorn() {
-    if (!audioCtx) return;
-    const now = audioCtx.currentTime;
-
-    // Premier bip
-    const osc1 = audioCtx.createOscillator();
-    const g1 = audioCtx.createGain();
-    osc1.type = 'square';
-    osc1.frequency.value = 420;
-    g1.gain.setValueAtTime(0.18, now);
-    g1.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-    osc1.connect(g1);
-    g1.connect(audioCtx.destination);
-    osc1.start(now);
-    osc1.stop(now + 0.13);
-
-    // Deuxième bip (pom-pom)
-    const osc2 = audioCtx.createOscillator();
-    const g2 = audioCtx.createGain();
-    osc2.type = 'square';
-    osc2.frequency.value = 380;
-    g2.gain.setValueAtTime(0.16, now + 0.15);
-    g2.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
-    osc2.connect(g2);
-    g2.connect(audioCtx.destination);
-    osc2.start(now + 0.15);
-    osc2.stop(now + 0.29);
-  }
-
-  // Son de crash + explosion
-  function playCrash() {
-    if (!audioCtx) return;
-    const now = audioCtx.currentTime;
-
-    // Bruit d'impact (noise)
-    const bufferSize = audioCtx.sampleRate * 0.4;
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 1.5);
-    }
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = buffer;
-
-    const noiseFilter = audioCtx.createBiquadFilter();
-    noiseFilter.type = 'lowpass';
-    noiseFilter.frequency.value = 900;
-
-    const noiseGain = audioCtx.createGain();
-    noiseGain.gain.setValueAtTime(0.45, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-
-    noise.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(audioCtx.destination);
-    noise.start(now);
-
-    // Boom grave
-    const osc = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(120, now);
-    osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
-    g.gain.setValueAtTime(0.5, now);
-    g.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-    osc.connect(g);
-    g.connect(audioCtx.destination);
-    osc.start(now);
-    osc.stop(now + 0.42);
-
-    // "Éclate" aigu
-    const osc2 = audioCtx.createOscillator();
-    const g2 = audioCtx.createGain();
-    osc2.type = 'sawtooth';
-    osc2.frequency.setValueAtTime(600, now);
-    osc2.frequency.exponentialRampToValueAtTime(80, now + 0.25);
-    g2.gain.setValueAtTime(0.25, now);
-    g2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-    osc2.connect(g2);
-    g2.connect(audioCtx.destination);
-    osc2.start(now);
-    osc2.stop(now + 0.32);
-  }
-
-  // Explosion visuelle + feu
-  function createExplosion(x, y) {
-    const exp = document.createElement('div');
-    exp.className = 'explosion';
-    exp.style.left = (x - 35) + 'px';
-    exp.style.top = (y - 35) + 'px';
-    container.appendChild(exp);
-
-    // Particules de feu
-    for (let i = 0; i < 8; i++) {
-      const p = document.createElement('div');
-      p.className = 'fire-particle';
-      p.style.left = (x + (Math.random() - 0.5) * 40) + 'px';
-      p.style.top = (y + (Math.random() - 0.5) * 20) + 'px';
-      p.style.background = ['#ff5722', '#ff9800', '#ffeb3b', '#f44336'][Math.floor(Math.random() * 4)];
-      container.appendChild(p);
-      setTimeout(() => p.remove(), 850);
-    }
-
-    setTimeout(() => exp.remove(), 750);
-  }
-
-  // ===== DÉCORS =====
   function createDeco(type, topPos, sideEl) {
     const deco = document.createElement('div');
     deco.classList.add('deco');
@@ -953,7 +773,6 @@
     }
   }
 
-  // ===== SCORES =====
   function getHighScores() {
     const data = localStorage.getItem('course2d_scores');
     return data ? JSON.parse(data) : [];
@@ -1005,6 +824,153 @@
 
   clearAllBtn.addEventListener('click', clearAllScores);
   clearAllBtnEnd.addEventListener('click', clearAllScores);
+
+  let audioCtx = null;
+  let engineOsc = null;
+  let engineGain = null;
+  let engineFilter = null;
+  let noiseNode = null;
+  let noiseGain = null;
+
+  function initAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    engineOsc = audioCtx.createOscillator();
+    engineOsc.type = 'sawtooth';
+    engineOsc.frequency.value = 95;
+
+    engineFilter = audioCtx.createBiquadFilter();
+    engineFilter.type = 'lowpass';
+    engineFilter.frequency.value = 700;
+
+    engineGain = audioCtx.createGain();
+    engineGain.gain.value = 0.12;
+
+    engineOsc.connect(engineFilter);
+    engineFilter.connect(engineGain);
+    engineGain.connect(audioCtx.destination);
+
+    const bufferSize = audioCtx.sampleRate * 2;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = buffer;
+    noiseNode.loop = true;
+
+    noiseGain = audioCtx.createGain();
+    noiseGain.gain.value = 0.028;
+
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.value = 320;
+
+    noiseNode.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+
+    engineOsc.start();
+    noiseNode.start();
+  }
+
+  function updateEngineSound() {
+    if (!audioCtx || !engineOsc) return;
+    const baseFreq = 90 + (speed * 10);
+    engineOsc.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.1);
+    engineFilter.frequency.setTargetAtTime(500 + speed * 45, audioCtx.currentTime, 0.1);
+  }
+
+  function stopEngineSound() {
+    if (engineGain) engineGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+    if (noiseGain) noiseGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+  }
+
+  function resumeEngineSound() {
+    if (engineGain) engineGain.gain.setTargetAtTime(0.12, audioCtx.currentTime, 0.1);
+    if (noiseGain) noiseGain.gain.setTargetAtTime(0.028, audioCtx.currentTime, 0.1);
+  }
+
+  // Son d'explosion (boum)
+  function playCrashSound() {
+    if (!audioCtx) return;
+
+    const now = audioCtx.currentTime;
+
+    // Bruit d'impact
+    const bufferSize = audioCtx.sampleRate * 0.6;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 1.5);
+    }
+
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(800, now);
+    noiseFilter.frequency.exponentialRampToValueAtTime(80, now + 0.5);
+
+    const noiseGainNode = audioCtx.createGain();
+    noiseGainNode.gain.setValueAtTime(0.7, now);
+    noiseGainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGainNode);
+    noiseGainNode.connect(audioCtx.destination);
+    noise.start(now);
+
+    // Basse "boum"
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(120, now);
+    osc.frequency.exponentialRampToValueAtTime(30, now + 0.4);
+
+    const oscGain = audioCtx.createGain();
+    oscGain.gain.setValueAtTime(0.6, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+    osc.connect(oscGain);
+    oscGain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.45);
+  }
+
+  function createFire(x, y) {
+    // Flash d'explosion
+    const flash = document.createElement('div');
+    flash.className = 'explosion-flash';
+    flash.style.left = (x - 20) + 'px';
+    flash.style.top = (y - 20) + 'px';
+    container.appendChild(flash);
+    setTimeout(() => flash.remove(), 400);
+
+    // Plusieurs flammes
+    for (let i = 0; i < 5; i++) {
+      const fire = document.createElement('div');
+      fire.className = 'fire';
+      fire.style.left = (x + (Math.random() * 30 - 15)) + 'px';
+      fire.style.top = (y + (Math.random() * 20 - 10)) + 'px';
+      fire.style.transform = `scale(${0.7 + Math.random() * 0.6})`;
+      container.appendChild(fire);
+
+      // Faire monter un peu les flammes
+      let fy = parseFloat(fire.style.top);
+      const interval = setInterval(() => {
+        fy -= 0.8;
+        fire.style.top = fy + 'px';
+        fire.style.opacity = parseFloat(fire.style.opacity || 1) - 0.015;
+      }, 30);
+
+      setTimeout(() => {
+        clearInterval(interval);
+        fire.remove();
+      }, 2200);
+    }
+  }
 
   function createLaneLines() {
     for (let i = 0; i < 14; i++) {
@@ -1083,10 +1049,6 @@
     enemy.style.left = positions[Math.floor(Math.random() * 3)] + 'px';
     enemy.style.top = isTruck ? '-120px' : '-95px';
 
-    // Propriétés pour klaxon
-    enemy.dataset.honked = 'false';
-    enemy.dataset.lastHorn = '0';
-
     container.appendChild(enemy);
     enemies.push(enemy);
   }
@@ -1097,7 +1059,7 @@
     if (e.key === 'ArrowUp')    keys.up = true;
     if (e.key === 'ArrowDown')  keys.down = true;
 
-    if (e.code === 'Space' && gameRunning) {
+    if (e.code === 'Space' && gameRunning && !isCrashing) {
       e.preventDefault();
       togglePause();
     }
@@ -1125,7 +1087,7 @@
     if (!gameRunning) return;
     requestAnimationFrame(gameLoop);
 
-    if (isPaused) return;
+    if (isPaused || isCrashing) return;
 
     const moveSpeed = 5.5;
     if (keys.left && playerX > 58)  playerX -= moveSpeed;
@@ -1153,37 +1115,13 @@
     moveEnvironment();
     updateEngineSound();
 
-    const now = Date.now();
-
     enemies.forEach((enemy, index) => {
       let top = parseFloat(enemy.style.top) || 0;
       top += speed;
       enemy.style.top = top + 'px';
 
-      // Quand la voiture approche → klaxon + clignotement
-      if (top > 180 && top < 480) {
-        enemy.classList.add('blink');
-
-        // Klaxon périodique (pom-pom)
-        const lastHorn = parseInt(enemy.dataset.lastHorn) || 0;
-        if (now - lastHorn > 900) {
-          playHorn();
-          enemy.dataset.lastHorn = now;
-        }
-      } else {
-        enemy.classList.remove('blink');
-      }
-
       if (checkCollision(player, enemy)) {
-        // Position de l'explosion
-        const playerRect = player.getBoundingClientRect();
-        const contRect = container.getBoundingClientRect();
-        const expX = playerRect.left - contRect.left + playerRect.width / 2;
-        const expY = playerRect.top - contRect.top + playerRect.height / 2;
-
-        playCrash();
-        createExplosion(expX, expY);
-        endGame();
+        triggerCrash(enemy);
       }
 
       if (top > 700) {
@@ -1206,11 +1144,35 @@
     );
   }
 
-  function endGame() {
+  function triggerCrash(enemy) {
+    if (isCrashing) return;
+    isCrashing = true;
     gameRunning = false;
+    if (spawnInterval) clearInterval(spawnInterval);
+
+    stopEngineSound();
+    playCrashSound();
+
+    // Position du crash
+    const pRect = player.getBoundingClientRect();
+    const cRect = container.getBoundingClientRect();
+    const crashX = pRect.left - cRect.left + 10;
+    const crashY = pRect.top - cRect.top + 20;
+
+    // Feu sur le joueur et l'ennemi
+    createFire(crashX, crashY);
+    createFire(crashX + 15, crashY - 10);
+    createFire(parseFloat(enemy.style.left) || crashX, parseFloat(enemy.style.top) || crashY);
+
+    // Laisser voir le feu 2.5 secondes puis Game Over
+    setTimeout(() => {
+      endGame();
+    }, 2500);
+  }
+
+  function endGame() {
     isPaused = false;
     pauseScreen.style.display = 'none';
-    stopEngineSound();
     finalScore.textContent = 'Score: ' + score;
 
     saveHighScore(playerName, score);
@@ -1218,12 +1180,14 @@
     displayHighScores(highscoresList);
 
     gameOverScreen.style.display = 'flex';
-    if (spawnInterval) clearInterval(spawnInterval);
   }
 
   function resetGameState() {
     enemies.forEach(e => e.remove());
     enemies = [];
+    // Nettoyer les feux restants
+    document.querySelectorAll('.fire, .explosion-flash').forEach(el => el.remove());
+
     score = 0;
     speed = 4.5;
     playerX = 189;
@@ -1233,6 +1197,7 @@
     playerNameDisplay.textContent = '';
     keys = { left: false, right: false, up: false, down: false };
     isPaused = false;
+    isCrashing = false;
     pauseScreen.style.display = 'none';
     currentLocation = 0;
     lastLocationScore = 0;
@@ -1252,12 +1217,13 @@
     startScreen.style.display = 'none';
     gameOverScreen.style.display = 'none';
     isPaused = false;
+    isCrashing = false;
     pauseScreen.style.display = 'none';
     gameRunning = true;
     gameLoop();
 
     spawnInterval = setInterval(() => {
-      if (gameRunning && !isPaused) createEnemy();
+      if (gameRunning && !isPaused && !isCrashing) createEnemy();
     }, 1500);
   }
 
