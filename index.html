@@ -183,24 +183,31 @@
     border-radius: 2px 2px 4px 4px;
     border: 1px solid rgba(0,0,0,0.25);
   }
+
+  /* ===== PHARES PLUS BRILLANTS ===== */
   .car .headlight {
     position: absolute;
-    top: 3px; width: 9px; height: 5px;
-    background: #fff8dc;
+    top: 3px; width: 10px; height: 6px;
+    background: #ffffff;
     border-radius: 2px;
-    box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
+    box-shadow: 
+      0 0 8px #fff,
+      0 0 16px #ffeaa7,
+      0 0 24px #ffd700;
   }
   .car .headlight.left  { left: 5px; }
   .car .headlight.right { right: 5px; }
+
   .car .taillight {
     position: absolute;
     bottom: 4px; width: 9px; height: 4px;
     background: #ff3b3b;
     border-radius: 2px;
-    box-shadow: 0 0 4px #ff3b3b;
+    box-shadow: 0 0 6px #ff3b3b, 0 0 12px #ff0000;
   }
   .car .taillight.left  { left: 5px; }
   .car .taillight.right { right: 5px; }
+
   .car .mirror {
     position: absolute;
     top: 18px; width: 5px; height: 3px;
@@ -229,16 +236,22 @@
     background: #999;
     border-radius: 1px;
   }
+
+  /* Faisceau de lumière plus fort pour TA voiture */
   .car .light-beam {
     position: absolute;
-    top: -42px; left: 50%;
+    top: -55px; left: 50%;
     transform: translateX(-50%);
-    width: 52px; height: 44px;
-    background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.4) 0%, rgba(255, 230, 120, 0.15) 40%, transparent 70%);
+    width: 70px; height: 60px;
+    background: radial-gradient(ellipse at center bottom, 
+      rgba(255, 255, 220, 0.7) 0%, 
+      rgba(255, 240, 150, 0.35) 35%, 
+      rgba(255, 220, 100, 0.12) 60%, 
+      transparent 80%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
-    filter: blur(3px);
+    filter: blur(2px);
   }
 
   .truck {
@@ -270,10 +283,13 @@
   }
   .truck .headlight {
     position: absolute;
-    top: 3px; width: 11px; height: 6px;
-    background: #fff8dc;
+    top: 3px; width: 12px; height: 7px;
+    background: #ffffff;
     border-radius: 2px;
-    box-shadow: 0 0 5px #fff8dc, 0 0 10px #ffeaa7;
+    box-shadow: 
+      0 0 8px #fff,
+      0 0 16px #ffeaa7,
+      0 0 24px #ffd700;
   }
   .truck .headlight.left  { left: 5px; }
   .truck .headlight.right { right: 5px; }
@@ -282,7 +298,7 @@
     bottom: 4px; width: 11px; height: 5px;
     background: #ff3b3b;
     border-radius: 2px;
-    box-shadow: 0 0 4px #ff3b3b;
+    box-shadow: 0 0 6px #ff3b3b, 0 0 12px #ff0000;
   }
   .truck .taillight.left  { left: 5px; }
   .truck .taillight.right { right: 5px; }
@@ -308,27 +324,53 @@
   }
   .truck .light-beam {
     position: absolute;
-    top: -48px; left: 50%;
+    top: -58px; left: 50%;
     transform: translateX(-50%);
-    width: 60px; height: 50px;
-    background: radial-gradient(ellipse at center bottom, rgba(255, 245, 180, 0.45) 0%, rgba(255, 230, 120, 0.18) 40%, transparent 70%);
+    width: 75px; height: 65px;
+    background: radial-gradient(ellipse at center bottom, 
+      rgba(255, 255, 220, 0.65) 0%, 
+      rgba(255, 240, 150, 0.3) 40%, 
+      transparent 75%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
-    filter: blur(4px);
+    filter: blur(3px);
   }
 
   .enemy { transform: rotate(180deg); }
 
+  /* Clignotement TRÈS BRILLANT (ennemis) */
   .enemy .headlight {
-    animation: blinkLights 0.7s infinite alternate;
+    animation: blinkLights 0.65s infinite alternate;
   }
   @keyframes blinkLights {
-    0%   { opacity: 1; box-shadow: 0 0 6px #fff8dc, 0 0 14px #ffeaa7; }
-    100% { opacity: 0.25; box-shadow: 0 0 2px #fff8dc; }
+    0% {
+      opacity: 1;
+      background: #ffffff;
+      box-shadow: 
+        0 0 10px #fff,
+        0 0 20px #ffeaa7,
+        0 0 35px #ffd700,
+        0 0 50px rgba(255, 220, 100, 0.6);
+    }
+    100% {
+      opacity: 0.2;
+      background: #fff8dc;
+      box-shadow: 0 0 3px #fff8dc;
+    }
   }
 
   #player .body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
+
+  /* Phares de TA voiture encore plus forts */
+  #player .headlight {
+    background: #ffffff !important;
+    box-shadow: 
+      0 0 12px #fff,
+      0 0 22px #ffeaa7,
+      0 0 35px #ffd700,
+      0 0 50px rgba(255, 230, 120, 0.7) !important;
+  }
 
   .enemy.green .body   { background: linear-gradient(to bottom, #00b894, #00916e); }
   .enemy.blue .body    { background: linear-gradient(to bottom, #0984e3, #0652dd); }
@@ -346,7 +388,6 @@
   .enemy.truck-gray .body   { background: linear-gradient(to bottom, #7f8c8d, #5d6d7e); }
   .enemy.truck-orange .body { background: linear-gradient(to bottom, #e67e22, #ca6f1e); }
 
-  /* Feu fixe (ne bouge pas) */
   .fire {
     position: absolute;
     width: 22px;
@@ -934,13 +975,12 @@
     osc.stop(now + 0.45);
   }
 
-  // Feu FIXE sur la voiture (ne monte plus)
   function createFireOnCar(carEl, offsetX = 0, offsetY = 0) {
     const fire = document.createElement('div');
     fire.className = 'fire';
     fire.style.left = (11 + offsetX) + 'px';
     fire.style.top = (15 + offsetY) + 'px';
-    carEl.appendChild(fire);   // attaché à la voiture → reste en place
+    carEl.appendChild(fire);
 
     setTimeout(() => {
       if (fire.parentNode) fire.remove();
@@ -1128,7 +1168,6 @@
     stopEngineSound();
     playCrashSound();
 
-    // Flash d'explosion
     const flash = document.createElement('div');
     flash.className = 'explosion-flash';
     flash.style.left = (playerX - 15) + 'px';
@@ -1136,15 +1175,11 @@
     container.appendChild(flash);
     setTimeout(() => flash.remove(), 350);
 
-    // Feu fixé SUR la voiture du joueur (ne bouge plus)
     createFireOnCar(player, 0, 0);
     createFireOnCar(player, 12, -5);
     createFireOnCar(player, -5, 8);
-
-    // Un peu de feu aussi sur l'ennemi
     createFireOnCar(enemy, 0, 10);
 
-    // Durée réduite : 1,2 seconde
     setTimeout(() => {
       endGame();
     }, 1200);
